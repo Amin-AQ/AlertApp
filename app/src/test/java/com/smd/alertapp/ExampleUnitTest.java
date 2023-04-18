@@ -1,4 +1,4 @@
-package com.smd.myapplication;
+package com.smd.alertapp;
 
 import org.junit.Test;
 
