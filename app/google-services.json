@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1044443573499",
+    "project_id": "emergencyalert-app",
+    "storage_bucket": "emergencyalert-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044443573499:android:94f00f9dccf2f1c843d45e",
+        "android_client_info": {
+          "package_name": "com.smd.alertapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1044443573499-gt25ql9g5qsn37jg3k0ptscetolrc1ut.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGXaLQgorH--LHbZl1P4F9SmF8Oz62z6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1044443573499-gt25ql9g5qsn37jg3k0ptscetolrc1ut.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
