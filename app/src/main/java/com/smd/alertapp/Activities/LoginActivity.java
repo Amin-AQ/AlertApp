@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import com.smd.alertapp.Entities.User.HelplineUser;
 import com.smd.alertapp.Entities.User.RegularUser;
@@ -21,6 +23,7 @@ import java.util.Objects;
 public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
