@@ -11,8 +11,9 @@ import com.smd.alertapp.Entities.User.HelplineUser;
 import com.smd.alertapp.Entities.User.RegularUser;
 import com.smd.alertapp.Entities.User.User;
 import com.smd.alertapp.Entities.User.UserType;
-import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.SessionManager;
+import com.smd.alertapp.R;
+
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -24,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d("MainActivity","OnCreate called");
         sessionManager=new SessionManager(getApplicationContext());
     }
 
