@@ -27,6 +27,13 @@
         android:theme="@style/Theme.AlertApp"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.SignupActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".Activities.MainActivity"
             android:exported="true">
             <intent-filter>
