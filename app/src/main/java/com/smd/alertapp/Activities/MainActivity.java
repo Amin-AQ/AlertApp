@@ -23,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d("MainActivity","OnCreate called");
         sessionManager = new SessionManager(getApplicationContext());
-        sessionManager.checkLogin();
+        if(!sessionManager.checkLogin())
+            finish();
         userDetails = sessionManager.getUserDetails();
+        Log.d("Deb",userDetails.toString());
     }
 }

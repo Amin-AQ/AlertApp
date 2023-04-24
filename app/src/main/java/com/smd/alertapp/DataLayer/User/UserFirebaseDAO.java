@@ -29,12 +29,11 @@ public class UserFirebaseDAO implements IUserDAO{
     FirebaseDatabase db;
     DatabaseReference ref, regularRef, helplineRef;
     Context context;
-    ArrayList<Hashtable<String,String>>data;
+    ArrayList<Hashtable<String,Object>>data;
 
     public UserFirebaseDAO(Context ctx ){
         context=ctx;
-        db=FirebaseDatabase.getInstance();
-        db.setPersistenceEnabled(true);
+        db=FirebaseDatabase.getInstance("https://emergencyalert-app-default-rtdb.asia-southeast1.firebasedatabase.app/");
         ref= db.getReference() ;
         regularRef=ref.child("RegularUser");
         helplineRef=ref.child("HelplineUser");
@@ -76,26 +75,40 @@ public class UserFirebaseDAO implements IUserDAO{
 
 
     @Override
-    public Hashtable<String, String> getById(String id, UserType userType) {
+    public User getById(String id, UserType userType) {
         DatabaseReference userRef;
-        if (userType == UserType.HELPLINE)
+        if (userType == UserType.HELPLINE) {
             userRef = helplineRef.child(id);
-        else
+            Task<DataSnapshot> dataSnapshotTask = userRef.get();
+            try {
+                Tasks.await(dataSnapshotTask);
+                DataSnapshot dataSnapshot = dataSnapshotTask.getResult();
+                if (dataSnapshot.exists()) {
+                    HelplineUser helplineUser = dataSnapshot.getValue(HelplineUser.class);
+                    helplineUser.setId(id);
+                    return helplineUser;
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
             userRef = regularRef.child(id);
-
-        Task<DataSnapshot> dataSnapshotTask = userRef.get();
-        try {
-            Tasks.await(dataSnapshotTask);
-            DataSnapshot dataSnapshot = dataSnapshotTask.getResult();
-
-            if (dataSnapshot.exists())
-                return dataSnapshot.getValue(new GenericTypeIndicator<Hashtable<String, String>>() {});
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            Task<DataSnapshot> dataSnapshotTask = userRef.get();
+            try {
+                Tasks.await(dataSnapshotTask);
+                DataSnapshot dataSnapshot = dataSnapshotTask.getResult();
+                if (dataSnapshot.exists()) {
+                    RegularUser regularUser = dataSnapshot.getValue(RegularUser.class);
+                    regularUser.setPhoneNumber(id);
+                    return regularUser;
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-
         return null;
     }
+
 
 
     private ValueEventListener createValueEventListener(){
@@ -103,14 +116,14 @@ public class UserFirebaseDAO implements IUserDAO{
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try{
-                    data = new ArrayList<Hashtable<String,String>>();
+                    data = new ArrayList<Hashtable<String,Object>>();
                     for(DataSnapshot d:snapshot.getChildren()){
                         GenericTypeIndicator<HashMap<String,Object>>typeIndicator=new GenericTypeIndicator<HashMap<String, Object>>() {};
                         HashMap<String,Object>map=d.getValue(typeIndicator);
                         if(map!=null) {
-                            Hashtable<String, String> obj = new Hashtable<String, String>();
+                            Hashtable<String, Object> obj = new Hashtable<String, Object>();
                             for (String key : map.keySet())
-                                obj.put(key, map.get(key).toString());
+                                obj.put(key, map.get(key));
                             data.add(obj);
                         }
                     }

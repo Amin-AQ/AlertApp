@@ -40,13 +40,15 @@ public class SessionManager {
         return pref.getBoolean(IS_LOGIN,false);
     }
 
-    public void checkLogin(){
-        if(!this.isLoggedIn()){
+    public Boolean checkLogin(){
+        Boolean loggedIn=this.isLoggedIn();
+        if(!loggedIn){
             Intent i = new Intent(_context, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             _context.startActivity(i);
         }
+        return loggedIn;
     }
 
     public HashMap<String, String> getUserDetails(){

@@ -3,18 +3,46 @@ package com.smd.alertapp.Entities.User;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.util.Date;
+
 public class RegularUser extends User{
 
     private String phoneNumber;
+    private Date dob;
+    private String gender;
 
-    public RegularUser(String password, UserType userType, String phoneNumber) {
+    public RegularUser(String password, UserType userType, String phoneNumber, Date dob, String gender) {
         super(password, userType);
         this.phoneNumber = phoneNumber;
+        this.dob = dob;
+        this.gender = gender;
     }
 
-    public RegularUser(User u, String pno){
-        super(u.password,u.userType);
-        phoneNumber=pno;
+    public RegularUser(String phoneNumber, String password, Date dob, String gender) {
+        super(password, UserType.REGULAR);
+        this.phoneNumber = phoneNumber;
+        this.dob = dob;
+        this.gender = gender;
+    }
+
+    public RegularUser() {
+        super("", UserType.REGULAR);
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getPhoneNumber() {

@@ -6,8 +6,18 @@ public class HelplineUser extends User{
 
     private String id;
 
-    public HelplineUser(String password, UserType userType) {
+    public HelplineUser(String id, String password) {
+        super(password, UserType.HELPLINE);
+        this.id=id;
+    }
+
+    public HelplineUser(){
+        super("",UserType.HELPLINE);
+    }
+
+    public HelplineUser(String password, UserType userType, String id) {
         super(password, userType);
+        this.id = id;
     }
 
     public String getId() {
