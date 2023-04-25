@@ -106,17 +106,26 @@ public class LoginActivity extends AppCompatActivity {
                 String id = getUserId();
                 User u = dao.getById(id,userType);
                 if(u!=null) {
-                    if (u.getUserType() == UserType.REGULAR)
-                        sessionManager.createLoginSession(((RegularUser) u).getPhoneNumber(), u.getPassword(), u.getUserType());
-                    else if (u.getUserType() == UserType.HELPLINE)
-                        sessionManager.createLoginSession(((HelplineUser) u).getId(), u.getPassword(), u.getUserType());
-
-                    // start main activity for the user
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if(u.getPassword().equals(pwdText.getText().toString())) {
+                        if (u.getUserType() == UserType.REGULAR)
+                            sessionManager.createLoginSession(((RegularUser) u).getPhoneNumber(), u.getPassword(), u.getUserType());
+                        else if (u.getUserType() == UserType.HELPLINE)
+                            sessionManager.createLoginSession(((HelplineUser) u).getId(), u.getPassword(), u.getUserType());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        // start main activity for the user
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    else
+                        u=null;
                 }
-                else{
+                if(u==null){
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

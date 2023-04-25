@@ -4,18 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.SignupActivity"
-    android:background="#FCF8F8">
+    tools:context=".Activities.SignupActivity">
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="177dp"
-        android:layout_height="159dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="207dp"
+        android:layout_height="174dp"
+        android:layout_marginTop="4dp"
         android:contentDescription="@string/applogo"
-        android:src="@mipmap/ic_launcher"
+        android:src="@mipmap/ic_launcher_foreground"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintHorizontal_bias="0.446"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -113,8 +112,8 @@
         android:layout_height="137dp"
         android:calendarViewShown="false"
         android:datePickerMode="spinner"
-        android:maxDate="2009-12-31"
-        android:minDate="1900-01-01"
+        android:maxDate="12/31/2009"
+        android:minDate="01/01/1920"
         android:padding="0dp"
         android:theme="@style/MyDatePicker"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -126,9 +125,11 @@
 
     <Button
         android:id="@+id/signup_button"
-        android:layout_width="361dp"
-        android:layout_height="48dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:backgroundTint="#E80000"
         android:text="@string/sign_up"
         android:textColor="#FFFFFF"

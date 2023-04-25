@@ -20,6 +20,6 @@ public class AlertApplication extends Application {
                 .build();*//*
 
         //FirebaseApp.initializeApp(this, options,"AlertApp");*/
-        FirebaseDatabase.getInstance("https://emergencyalert-app-default-rtdb.asia-southeast1.firebasedatabase.app/").setPersistenceEnabled(true);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }

@@ -20,4 +20,11 @@
         <!-- Divider color -->
         <item name="colorControlNormal">#FF7A7A</item>
     </style>
+
+
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">#F6E5E5</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>

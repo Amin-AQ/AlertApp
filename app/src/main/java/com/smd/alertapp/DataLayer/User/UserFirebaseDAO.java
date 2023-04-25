@@ -33,7 +33,7 @@ public class UserFirebaseDAO implements IUserDAO{
 
     public UserFirebaseDAO(Context ctx ){
         context=ctx;
-        db=FirebaseDatabase.getInstance("https://emergencyalert-app-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        db=FirebaseDatabase.getInstance();
         ref= db.getReference() ;
         regularRef=ref.child("RegularUser");
         helplineRef=ref.child("HelplineUser");

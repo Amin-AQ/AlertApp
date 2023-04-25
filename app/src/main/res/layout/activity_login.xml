@@ -3,19 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FCF8F8">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="239dp"
-        android:layout_height="218dp"
-        android:layout_marginTop="32dp"
-        android:src="@mipmap/ic_launcher"
+        android:layout_width="259dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="4dp"
+        android:contentDescription="@string/applogo"
+        android:src="@mipmap/ic_launcher_foreground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/applogo" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/phone_number"
@@ -92,10 +91,12 @@
 
     <Button
         android:id="@+id/login_button"
-        android:layout_width="361dp"
-        android:layout_height="48dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:backgroundTint="#E80000"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:text="@string/login"
         android:textColor="#FFFFFF"
         android:textSize="18sp"

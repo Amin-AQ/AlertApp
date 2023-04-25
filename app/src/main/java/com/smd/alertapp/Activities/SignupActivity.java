@@ -79,6 +79,14 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+        loginTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(SignupActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
     public class SignupUser extends AsyncTask<String, String, String> {
 
