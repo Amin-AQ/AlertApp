@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,12 +45,16 @@ public class ContactsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
-        contacts = ContactsUtil.getContacts(getContext());
-        adapter = new ContactsAdapter(contacts);
+        sharedPreferences = getActivity().getSharedPreferences("ContactPrefs", Context.MODE_PRIVATE);
 
+        // Get the saved selected contacts (if any)
+        Set<String> mSelectedContacts = sharedPreferences.getStringSet("selectedContacts", new HashSet<String>());
+
+        Log.d("Here0",mSelectedContacts.toString());
+        contacts = ContactsUtil.getContacts(getContext());
+        adapter = new ContactsAdapter(contacts, mSelectedContacts);
         recyclerView.setAdapter(adapter);
 
-        sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
 
         Button doneButton = view.findViewById(R.id.contacts_done_button);
         doneButton.setOnClickListener(new View.OnClickListener() {
@@ -67,12 +72,9 @@ public class ContactsFragment extends Fragment {
     }
 
     private void saveSelectedContacts() {
-        // Get the SharedPreferences instance
-        sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-
         // Get the saved selected contacts (if any)
-        Set<String> mSelectedContacts = sharedPreferences.getStringSet("selectedContacts", new HashSet<String>());
-
+        Set<String> mSelectedContacts = new HashSet<String>();
+        Log.d("Here1",mSelectedContacts.toString());
         // Get the selected contacts from the adapter
         ArrayList<Boolean> contactsCheck = adapter.getCheckedContacts();
         List<Map<String, String>> contacts = adapter.getContacts();
@@ -81,19 +83,16 @@ public class ContactsFragment extends Fragment {
             Boolean isChecked=contactsCheck.get(i);
             if (isChecked) {
                 // Check if the contact is not already saved
-                if (!mSelectedContacts.contains(contact.get("number"))) {
                     // Add the contact to the saved set
                     mSelectedContacts.add(contact.get("number"));
-                }
-            } else {
-                // Remove the contact from the saved set (if present)
-                mSelectedContacts.remove(contact.get("number"));
             }
         }
-
+        Log.d("Here1",mSelectedContacts.toString());
         // Save the selected contacts to SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
         editor.putStringSet("selectedContacts", mSelectedContacts);
-        editor.apply();
+        Log.d("Hare", String.valueOf(editor.commit()));
     }
 }

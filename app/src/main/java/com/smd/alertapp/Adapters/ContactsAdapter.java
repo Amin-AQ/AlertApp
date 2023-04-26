@@ -12,18 +12,55 @@ import android.widget.TextView;
 import com.smd.alertapp.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHolder> {
 
     private List<Map<String, String>> contacts;
     private ArrayList<Boolean> checkedContacts;
 
-    public ContactsAdapter(List<Map<String, String>> contacts) {
+    public ContactsAdapter(List<Map<String, String>> contacts, Set<String> prevCheckedContacts) {
         this.contacts = contacts;
-        this.checkedContacts = new ArrayList<Boolean>(contacts.size());
+        this.checkedContacts = new ArrayList<>(contacts.size());
+
+        // Initialize the checkedContacts list with false values for all contacts
+        for (int i = 0; i < contacts.size(); i++) {
+            checkedContacts.add(false);
+        }
+
+        // Update the checkedContacts list for previously checked contacts
+        for (int i = 0; i < contacts.size(); i++) {
+            Map<String, String> contact = contacts.get(i);
+            if (prevCheckedContacts.contains(contact.get("number"))) {
+                checkedContacts.set(i, true);
+            }
+        }
+
+       /* // Sort the contacts so that the already checked contacts appear first
+        Collections.sort(contacts, new Comparator<Map<String, String>>() {
+            @Override
+            public int compare(Map<String, String> c1, Map<String, String> c2) {
+                int c1Index = contacts.indexOf(c1);
+                int c2Index = contacts.indexOf(c2);
+                boolean c1Checked = checkedContacts.get(c1Index);
+                boolean c2Checked = checkedContacts.get(c2Index);
+
+                if (c1Checked && !c2Checked) {
+                    return -1;
+                } else if (!c1Checked && c2Checked) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });*/
     }
+
 
     public List<Map<String, String>> getContacts() {
         return contacts;
@@ -48,6 +85,18 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     @Override
     public int getItemCount() {
         return contacts.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     public ArrayList<Boolean> getCheckedContacts() {

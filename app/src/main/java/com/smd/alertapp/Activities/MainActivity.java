@@ -2,13 +2,17 @@ package com.smd.alertapp.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.smd.alertapp.Fragments.ContactsFragment;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.PermissionUtil;
 import com.smd.alertapp.Utilities.SessionManager;
@@ -24,10 +28,12 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
 
 
+    FrameLayout contactFrag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        contactFrag=findViewById(R.id.fragment_container);
         Log.d("MainActivity","OnCreate called");
         sessionManager = new SessionManager(getApplicationContext());
         if(!sessionManager.checkLogin())
@@ -39,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
         {
             List<Map<String,String>> contactList= ContactsUtil.getContacts(MainActivity.this);
             //Log.d("Contacts",contactList.toString());
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            ContactsFragment contactsFragment = new ContactsFragment();
+            fragmentTransaction.replace(R.id.fragment_container, contactsFragment);
+            fragmentTransaction.addToBackStack(null);
+
+            fragmentTransaction.commit();
+
         }
     }
 
