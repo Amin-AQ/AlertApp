@@ -15,4 +15,14 @@
     <string name="already_have_an_account_login">Already have an account? Login</string>
     <string name="date_of_birth">DATE OF BIRTH</string>
     <string name="done">Done</string>
+    <string name="contact_helpline">Contact Helpline</string>
+    <string name="edit_contacts">Edit Contacts</string>
+    <string name="quick_alert">Quick Alert</string>
+    <string name="alert_both">Alert Both</string>
+    <string name="alert_contacts_only">Alert Contacts only</string>
+    <string name="alert_helplines_only">Alert helplines only</string>
+    <string name="custom_alert_message">Custom alert message</string>
+    <string name="settings">Settings</string>
+    <string name="posts">Posts</string>
+    <string name="home">Home</string>
 </resources>

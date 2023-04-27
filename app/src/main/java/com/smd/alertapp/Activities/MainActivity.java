@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        contactFrag=findViewById(R.id.fragment_container);
+        //contactFrag=findViewById(R.id.fragment_container);
         Log.d("MainActivity","OnCreate called");
         sessionManager = new SessionManager(getApplicationContext());
         if(!sessionManager.checkLogin())
@@ -45,14 +45,14 @@ public class MainActivity extends AppCompatActivity {
         {
             List<Map<String,String>> contactList= ContactsUtil.getContacts(MainActivity.this);
             //Log.d("Contacts",contactList.toString());
-            FragmentManager fragmentManager = getSupportFragmentManager();
+/*            FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
             ContactsFragment contactsFragment = new ContactsFragment();
             fragmentTransaction.replace(R.id.fragment_container, contactsFragment);
             fragmentTransaction.addToBackStack(null);
 
-            fragmentTransaction.commit();
+            fragmentTransaction.commit();*/
 
         }
     }
