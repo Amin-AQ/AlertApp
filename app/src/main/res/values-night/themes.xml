@@ -26,4 +26,10 @@
         <item name="colorControlNormal">#FF7A7A</item>
     </style>
 
+    <style name="FragmentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">#3E3E3E</item>
+        <item name="android:textColor">#A5A4A4</item>
+        <item name="android:buttonTint">#A5A4A4</item>
+    </style>
+
 </resources>

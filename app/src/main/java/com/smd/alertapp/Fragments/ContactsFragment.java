@@ -2,8 +2,10 @@ package com.smd.alertapp.Fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.smd.alertapp.Adapters.ContactsAdapter;
 import com.smd.alertapp.R;
@@ -43,7 +46,13 @@ public class ContactsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.contacts_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.divider);
+        if (drawable != null) {
+            itemDecoration.setDrawable(drawable);
+        }
+        recyclerView.addItemDecoration(itemDecoration);
+
 
         sharedPreferences = getActivity().getSharedPreferences("ContactPrefs", Context.MODE_PRIVATE);
 
@@ -54,7 +63,8 @@ public class ContactsFragment extends Fragment {
         contacts = ContactsUtil.getContacts(getContext());
         adapter = new ContactsAdapter(contacts, mSelectedContacts);
         recyclerView.setAdapter(adapter);
-
+        if(contacts.size()==0)
+            Toast.makeText(getActivity(),"No contacts in your phone",Toast.LENGTH_SHORT).show();
 
         Button doneButton = view.findViewById(R.id.contacts_done_button);
         doneButton.setOnClickListener(new View.OnClickListener() {

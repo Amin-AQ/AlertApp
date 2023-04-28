@@ -2,6 +2,7 @@ package com.smd.alertapp.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -26,13 +28,17 @@ public class MainActivity extends AppCompatActivity {
     SessionManager sessionManager;
     HashMap<String, String> userDetails;
     Intent intent;
-
+    CardView quickAlertCard, editContactsCard, callHelplineCard;
 
     FrameLayout contactFrag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        contactFrag=findViewById(R.id.fragment_container);
+        quickAlertCard=findViewById(R.id.quickAlertCard);
+        editContactsCard=findViewById(R.id.editContactsCard);
+        callHelplineCard=findViewById(R.id.contact_helpline_card);
         //contactFrag=findViewById(R.id.fragment_container);
         Log.d("MainActivity","OnCreate called");
         sessionManager = new SessionManager(getApplicationContext());
@@ -41,20 +47,25 @@ public class MainActivity extends AppCompatActivity {
         userDetails = sessionManager.getUserDetails();
         Log.d("Deb",userDetails.toString());
         PermissionUtil.requestReadContactsPermission(MainActivity.this);
-        if(checkSelfPermission(android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
-        {
-            List<Map<String,String>> contactList= ContactsUtil.getContacts(MainActivity.this);
-            //Log.d("Contacts",contactList.toString());
-/*            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        editContactsCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PermissionUtil.requestReadContactsPermission(MainActivity.this);
+                if(checkSelfPermission(android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
+                {
+                    //Log.d("Contacts",contactList.toString());
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            ContactsFragment contactsFragment = new ContactsFragment();
-            fragmentTransaction.replace(R.id.fragment_container, contactsFragment);
-            fragmentTransaction.addToBackStack(null);
+                    ContactsFragment contactsFragment = new ContactsFragment();
+                    fragmentTransaction.replace(R.id.fragment_container, contactsFragment);
+                    fragmentTransaction.addToBackStack(null);
 
-            fragmentTransaction.commit();*/
+                    fragmentTransaction.commit();
+                }
+            }
+        });
 
-        }
     }
 
     @Override
