@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.smd.alertapp.Fragments.ContactsFragment;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.PermissionUtil;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String, String> userDetails;
     Intent intent;
     CardView quickAlertCard, editContactsCard, callHelplineCard;
-
+    BottomNavigationView bottomNav;
     FrameLayout contactFrag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         quickAlertCard=findViewById(R.id.quickAlertCard);
         editContactsCard=findViewById(R.id.editContactsCard);
         callHelplineCard=findViewById(R.id.contact_helpline_card);
+        bottomNav=findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.menu_home);
         //contactFrag=findViewById(R.id.fragment_container);
         Log.d("MainActivity","OnCreate called");
         sessionManager = new SessionManager(getApplicationContext());
@@ -65,8 +68,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        bottomNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedItemId = bottomNav.getSelectedItemId();
+                if (selectedItemId == R.id.menu_posts) {
+                    startActivity(new Intent(getApplicationContext(),PostActivity.class));
+                    overridePendingTransition(0,0);
+                }else if (selectedItemId==R.id.menu_settings){
+                    startActivity(new Intent(getApplicationContext(),SettingActivity.class));
+                    overridePendingTransition(0,0);
+                }
+            }
+        });
+
 
     }
+
+    
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
