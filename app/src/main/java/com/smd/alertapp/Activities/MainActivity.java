@@ -10,11 +10,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.smd.alertapp.Fragments.ContactsFragment;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.PermissionUtil;
@@ -72,20 +74,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        bottomNav.setOnClickListener(new View.OnClickListener() {
+        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                int selectedItemId = bottomNav.getSelectedItemId();
-                if (selectedItemId == R.id.menu_posts) {
-                    startActivity(new Intent(getApplicationContext(),PostActivity.class));
-                    overridePendingTransition(0,0);
-                }else if (selectedItemId==R.id.menu_settings){
-                    startActivity(new Intent(getApplicationContext(),SettingActivity.class));
-                    overridePendingTransition(0,0);
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.menu_posts) {
+                    startActivity(new Intent(getApplicationContext(), PostActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.menu_settings) {
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
                 }
+                return false;
             }
         });
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        /*Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         Message message = Message.creator(
                         new com.twilio.type.PhoneNumber("whatsapp:+923236037484"),
                         new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
@@ -109,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Whatsapp",message.getSid());
         Log.d("Whatsapp",message2.getSid());
         Log.d("Whatsapp",message3.getSid());
-        Log.d("Whatsapp",message4.getSid());
+        Log.d("Whatsapp",message4.getSid());*/
     }
 
     
