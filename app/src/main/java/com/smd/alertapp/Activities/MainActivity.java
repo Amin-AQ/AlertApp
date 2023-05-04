@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         callHelplineCard=findViewById(R.id.contact_helpline_card);
         bottomNav=findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.menu_home);
-        //contactFrag=findViewById(R.id.fragment_container);
         Log.d("MainActivity","OnCreate called");
         sessionManager = new SessionManager(getApplicationContext());
         if(!sessionManager.checkLogin())

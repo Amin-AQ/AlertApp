@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/outline"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/postUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Faizan Subhani"
+        android:padding="10dp"
+        />
+    <TextView
+        android:id="@+id/postText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/postUser"
+        android:padding="10dp"
+        android:hint="This is a good post, This is a good post, This is a good post, This is a good post."
+        />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/viewCommentsCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_below="@id/postText"
+        android:layout_marginHorizontal="10dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp">
+
+        <ImageView
+            android:id="@+id/CommentIcon"
+            android:paddingStart="32dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:src="@drawable/comment_button"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_gravity="center"
+            android:text="@string/post_comments"
+            android:textSize="18sp" />
+
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
