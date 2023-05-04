@@ -6,6 +6,6 @@ import com.smd.alertapp.Entities.User.UserType;
 import java.util.Hashtable;
 
 public interface IUserDAO {
-    public void save(User user);
-    public User getById(String id, UserType userType);
+    void save(User user);
+    User getById(String id, UserType userType);
 }

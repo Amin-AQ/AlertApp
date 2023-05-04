@@ -20,6 +20,8 @@ import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.PermissionUtil;
 import com.smd.alertapp.Utilities.SessionManager;
 import com.smd.alertapp.Utilities.ContactsUtil;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     CardView quickAlertCard, editContactsCard, callHelplineCard;
     BottomNavigationView bottomNav;
     FrameLayout contactFrag;
+    public static final String ACCOUNT_SID ="AC18b2dc46884f23637d10616e824df71f";
+    public static final String AUTH_TOKEN = "a5c466daed94ca2707bd4e938eea537b";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +85,31 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        Message message = Message.creator(
+                        new com.twilio.type.PhoneNumber("whatsapp:+923236037484"),
+                        new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
+                        "Hello, Hope ur doing well. I am not, help me, haaalp. My location is blah blahah")
+                .create();
+        Message message2 = Message.creator(
+                        new com.twilio.type.PhoneNumber("whatsapp:+923244270720"),
+                        new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
+                        "Hello, Hope ur doing well. I am not, help me, haaalp. My location is blah blahah")
+                .create();
+        Message message3 = Message.creator(
+                        new com.twilio.type.PhoneNumber("whatsapp:+923217750712"),
+                        new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
+                        "Hello, Hope ur doing well. I am not, help me, haaalp. My location is blah blahah")
+                .create();
+        Message message4 = Message.creator(
+                        new com.twilio.type.PhoneNumber("whatsapp:+923346119000"),
+                        new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
+                        "Hello, Hope ur doing well. I am not, help me, haaalp. My location is blah blahah")
+                .create();
+        Log.d("Whatsapp",message.getSid());
+        Log.d("Whatsapp",message2.getSid());
+        Log.d("Whatsapp",message3.getSid());
+        Log.d("Whatsapp",message4.getSid());
     }
 
     

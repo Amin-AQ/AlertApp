@@ -34,7 +34,7 @@ public class UserFirebaseDAO implements IUserDAO{
     public UserFirebaseDAO(Context ctx ){
         context=ctx;
         db=FirebaseDatabase.getInstance();
-        ref= db.getReference() ;
+        ref= db.getReference();
         regularRef=ref.child("RegularUser");
         helplineRef=ref.child("HelplineUser");
         regularRef.addValueEventListener(createValueEventListener());
