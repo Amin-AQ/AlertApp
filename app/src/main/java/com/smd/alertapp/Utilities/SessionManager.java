@@ -21,6 +21,7 @@ public class SessionManager {
     private static final String KEY_ID ="id";
     private static final String KEY_PASSWORD="password";
     private static final String KEY_USERTYPE="usertype";
+    private static final String KEY_USERNAME="username";
 
     public SessionManager(Context context){
         this._context=context;
@@ -28,10 +29,11 @@ public class SessionManager {
         editor= pref.edit();
     }
 
-    public void createLoginSession(String id, String password, UserType userType){
+    public void createLoginSession(String id, String username, String password, UserType userType){
         editor.putBoolean(IS_LOGIN,true);
         editor.putString(KEY_ID,id);
         editor.putString(KEY_PASSWORD,password);
+        editor.putString(KEY_USERNAME,username);
         editor.putString(KEY_USERTYPE,userType.toString());
         editor.commit();
     }
@@ -54,6 +56,7 @@ public class SessionManager {
     public HashMap<String, String> getUserDetails(){
         HashMap<String,String> user = new HashMap<String,String>();
         user.put(KEY_ID,pref.getString(KEY_ID,null));
+        user.put(KEY_USERNAME,pref.getString(KEY_USERNAME,null));
         user.put(KEY_PASSWORD,pref.getString(KEY_PASSWORD,null));
         user.put(KEY_USERTYPE,pref.getString(KEY_USERTYPE,null));
         return user;

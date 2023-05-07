@@ -3,12 +3,22 @@ package com.smd.alertapp.Entities.User;
 import android.content.Context;
 
 public abstract class User {
+    protected String username;
     protected String password;
     protected UserType userType;
 
-    public User(String password, UserType userType) {
+    public User(String username,String password, UserType userType) {
         this.password = password;
         this.userType = userType;
+        this.username=username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public UserType getUserType() {

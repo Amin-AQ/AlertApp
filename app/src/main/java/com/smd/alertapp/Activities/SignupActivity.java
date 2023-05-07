@@ -25,7 +25,7 @@ import java.util.Date;
 
 public class SignupActivity extends AppCompatActivity {
 
-    EditText phoneTxt, pwdTxt, cPwdTxt;  // phone num, password and confirm password
+    EditText phoneTxt, pwdTxt, cPwdTxt,usernameTxt;  // phone num, password and confirm password
     TextView loginTxt;
     Button signupBtn;
     RadioGroup radioGroup;
@@ -36,6 +36,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        usernameTxt=findViewById(R.id.username);
         phoneTxt=findViewById(R.id.phone_number);
         pwdTxt=findViewById(R.id.password);
         cPwdTxt=findViewById(R.id.confirm_password);
@@ -51,6 +52,11 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     // Check if all fields are filled in
+                    if(usernameTxt.getText().toString().length()<4){
+                        Toast.makeText(SignupActivity.this, "Username must be of at least 4 characters", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     if (phoneTxt.getText().toString().isEmpty() ||
                             pwdTxt.getText().toString().isEmpty() ||
                             cPwdTxt.getText().toString().isEmpty()) {
@@ -117,12 +123,11 @@ public class SignupActivity extends AppCompatActivity {
                 int day = dobPicker.getDayOfMonth();
                 java.util.Date date = new java.text.SimpleDateFormat("dd.MM.yyyy").parse(day + "." + month + "." + year);
                 // Create user
-                RegularUser user = new RegularUser(phoneTxt.getText().toString(), pwdTxt.getText().toString(),date,gender);
+                RegularUser user = new RegularUser(usernameTxt.getText().toString(),phoneTxt.getText().toString(), pwdTxt.getText().toString(),date,gender);
                 phoneTxt.setText("");
                 pwdTxt.setText("");
                 cPwdTxt.setText("");
                 // Create user in database
-                // TODO: Implement this method
                 dao.save(user);
                 // Redirect to login screen
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);

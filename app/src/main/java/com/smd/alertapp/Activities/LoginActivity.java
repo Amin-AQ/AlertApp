@@ -108,9 +108,9 @@ public class LoginActivity extends AppCompatActivity {
                 if(u!=null) {
                     if(u.getPassword().equals(pwdText.getText().toString())) {
                         if (u.getUserType() == UserType.REGULAR)
-                            sessionManager.createLoginSession(((RegularUser) u).getPhoneNumber(), u.getPassword(), u.getUserType());
+                            sessionManager.createLoginSession(((RegularUser) u).getPhoneNumber(),u.getUsername(), u.getPassword(), u.getUserType());
                         else if (u.getUserType() == UserType.HELPLINE)
-                            sessionManager.createLoginSession(((HelplineUser) u).getId(), u.getPassword(), u.getUserType());
+                            sessionManager.createLoginSession(((HelplineUser) u).getId(),u.getUsername(), u.getPassword(), u.getUserType());
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

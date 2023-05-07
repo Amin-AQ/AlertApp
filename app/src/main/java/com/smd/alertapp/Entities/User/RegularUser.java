@@ -11,22 +11,22 @@ public class RegularUser extends User{
     private Date dob;
     private String gender;
 
-    public RegularUser(String password, UserType userType, String phoneNumber, Date dob, String gender) {
-        super(password, userType);
+    public RegularUser(String username,String password, UserType userType, String phoneNumber, Date dob, String gender) {
+        super(username,password, userType);
         this.phoneNumber = phoneNumber;
         this.dob = dob;
         this.gender = gender;
     }
 
-    public RegularUser(String phoneNumber, String password, Date dob, String gender) {
-        super(password, UserType.REGULAR);
+    public RegularUser(String username,String phoneNumber, String password, Date dob, String gender) {
+        super(username,password, UserType.REGULAR);
         this.phoneNumber = phoneNumber;
         this.dob = dob;
         this.gender = gender;
     }
 
     public RegularUser() {
-        super("", UserType.REGULAR);
+        super("","", UserType.REGULAR);
     }
 
     public Date getDob() {

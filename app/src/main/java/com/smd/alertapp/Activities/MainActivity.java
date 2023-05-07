@@ -3,9 +3,12 @@ package com.smd.alertapp.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -74,6 +77,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        quickAlertCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[]permissions=new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                                 Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                                                 Manifest.permission.SEND_SMS};
+/*                if(!hasPermissions()){
+                    ActivityCompat.requestPermissions(MainActivity.this,permissions,2);
+                }*/
+            }
+        });
+
         bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -117,7 +133,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Whatsapp",message4.getSid());*/
     }
 
-    
+    void quickAlert(){
+
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -126,10 +144,24 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // The permission was granted, do what we need to do.
             // For example, get the list of contacts.
-        } else {
+        } else if(requestCode == 2 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+        }
+        else {
             // The permission was denied, show a message to the user.
             Toast.makeText(MainActivity.this, "Permission denied, you won't be able to use this feature", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }
