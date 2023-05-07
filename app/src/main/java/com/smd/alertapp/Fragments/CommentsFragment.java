@@ -24,10 +24,12 @@ import com.smd.alertapp.DataLayer.Post.PostsCallback;
 import com.smd.alertapp.Entities.Comment;
 import com.smd.alertapp.Entities.Post;
 import com.smd.alertapp.R;
+import com.smd.alertapp.Utilities.SessionManager;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.RecursiveAction;
 
 public class CommentsFragment extends Fragment {
@@ -38,6 +40,8 @@ public class CommentsFragment extends Fragment {
     private TextView newCommentText;
     private RecyclerView commentsList;
     private CommentsAdapter adapter;
+    SessionManager sessionManager;
+    HashMap<String, String> userDetails;
 
     public static CommentsFragment newInstance(String postId) {
         CommentsFragment fragment = new CommentsFragment();
@@ -55,7 +59,8 @@ public class CommentsFragment extends Fragment {
         backButton = view.findViewById(R.id.back_button);
         commentsList = view.findViewById(R.id.comment_box);
         commentsList.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        sessionManager = new SessionManager(getActivity().getApplicationContext());
+        userDetails = sessionManager.getUserDetails();
         String postId = getArguments().getString(ARG_POST_ID);
         System.out.println("Post id received: " + postId);
         CommentFirebaseDAO dao = new CommentFirebaseDAO(this.getContext());
@@ -75,7 +80,7 @@ public class CommentsFragment extends Fragment {
                     Toast.makeText(getContext(), "Post text is empty", Toast.LENGTH_SHORT).show();
                 } else {
                     String text = newCommentText.getText().toString();
-                    Comment newComment = new Comment(postId, "Faizan Mirza", text);
+                    Comment newComment = new Comment(postId, userDetails.get("username"), text);
                     dao.save(newComment);
                     Log.e("Comment for post: ", postId);
                     newCommentText.setText("");

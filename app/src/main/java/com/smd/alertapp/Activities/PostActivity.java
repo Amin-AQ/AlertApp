@@ -70,7 +70,7 @@ public class PostActivity extends AppCompatActivity {
                     Toast.makeText(PostActivity.this, "Post text is empty", Toast.LENGTH_SHORT).show();
                 } else {
                     String text = postText.getText().toString();
-                    Post newPost = new Post(text, "124301");
+                    Post newPost = new Post(text, userDetails.get("username"));
                     dao.save(newPost);
                     postText.setText("");
                     dao.getPosts(new PostsCallback() {
