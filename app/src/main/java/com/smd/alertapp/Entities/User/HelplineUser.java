@@ -9,19 +9,19 @@ public class HelplineUser extends User{
 
     private HelplineType helplineType;
 
-    public HelplineUser(String id, String password, HelplineType type) {
-        super(password, UserType.HELPLINE);
+    public HelplineUser(String id, String username, String password, HelplineType type) {
+        super(username, password, UserType.HELPLINE);
         this.id=id;
         this.helplineType=type;
     }
 
     public HelplineUser(){
-        super("",UserType.HELPLINE);
+        super("","",UserType.HELPLINE);
     }
 
 
-    public HelplineUser(String password, UserType userType, String id) {
-        super(password, userType);
+    public HelplineUser(String username,String password, UserType userType, String id) {
+        super(username,password, userType);
         this.id = id;
     }
 
