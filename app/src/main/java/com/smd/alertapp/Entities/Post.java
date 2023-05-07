@@ -48,11 +48,13 @@ public class Post {
     public Post(String text, String user) {
         this.text = text;
         this.userId = user;
-//        this.postId = String.
         LocalDateTime localDateTime = LocalDateTime.now();
         Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
         this.date = Date.from(instant);
     }
 
+    public Post() {
+
+    }
 
 }

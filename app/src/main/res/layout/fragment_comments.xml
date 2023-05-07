@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/FragmentTheme">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/comment_box_heading"
+        >
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/back_button" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="11dp"
+            android:paddingLeft="83dp"
+            android:hint="Comments"
+            android:textSize="23dp"
+            android:textFontWeight="400"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/comment_box"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/comment_box_heading"
+        android:layout_above="@+id/new_comment"
+        />
+    <RelativeLayout
+        android:id="@+id/new_comment"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/outline"
+        android:layout_alignParentBottom="true"
+        >
+        <EditText
+            android:id="@+id/new_comment_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:gravity="top|start"
+            android:hint="@string/new_comment"
+            android:padding="5dp" />
+
+        <ImageButton
+            android:id="@+id/comment_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/send" />
+    </RelativeLayout>
+</RelativeLayout>

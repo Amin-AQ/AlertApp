@@ -10,5 +10,5 @@ public interface IPostDAO {
     public void save(Post post);
 
     public Post getById(String id);
-    public ArrayList<Post> load();
+    public void getPosts(PostsCallback postsCallback);
 }

@@ -28,43 +28,27 @@ import java.util.concurrent.ExecutionException;
 
 public class PostFirebaseDAO implements IPostDAO{
     FirebaseDatabase db;
-    DatabaseReference ref, postRef;
+    DatabaseReference postRef;
     Context context;
-    ArrayList<Hashtable<String,Object>> data;
+    ValueEventListener postsValueEventListener;
 
     public PostFirebaseDAO(Context ctx ){
-        context=ctx;
-        db=FirebaseDatabase.getInstance();
-        ref= db.getReference() ;
-        postRef = ref.child("Post");
-        postRef.addValueEventListener(createValueEventListener());
+        context = ctx;
+        db = FirebaseDatabase.getInstance();
+        postRef = db.getReference("Post");
     }
 
     @Override
     public void save(Post post) {
-        DatabaseReference lpostRef;
-        String key = post.getPostId();
-        lpostRef = postRef.child(key);
-        lpostRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists())
-                    Toast.makeText(context, "Post Id already exists", Toast.LENGTH_SHORT).show();
-                else
-                    lpostRef.setValue(post)
-                            .addOnCompleteListener(task -> {
-                                Toast.makeText( context,"Post created successfully", Toast.LENGTH_LONG).show();
-                            }).addOnFailureListener(task -> {
-                                Toast.makeText( context,"Error creating post", Toast.LENGTH_LONG).show();
-                            });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error
-                Log.d("UserFirebaseOnCancelSave",error.toString());
-            }
-        });
+        String key = postRef.push().getKey();
+        Log.e("Post key: ", key);
+        post.setPostId(key);
+        postRef.child(key).setValue(post)
+                .addOnCompleteListener(task -> {
+                    Toast.makeText( context,"Post created successfully", Toast.LENGTH_LONG).show();
+                }).addOnFailureListener(task -> {
+                    Toast.makeText( context,"Error creating post", Toast.LENGTH_LONG).show();
+                });
     }
 
     @Override
@@ -86,50 +70,22 @@ public class PostFirebaseDAO implements IPostDAO{
     }
 
     @Override
-    public ArrayList<Post> load() {
-        ArrayList<Post> posts = new ArrayList<Post>();
-        Task<DataSnapshot> dataSnapshotTask = postRef.get();
-        try{
-            Tasks.await(dataSnapshotTask);
-            DataSnapshot dataSnapshot = dataSnapshotTask.getResult();
-            for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                Post post = snapshot.getValue(Post.class);
-                posts.add(post);
-            }
-        }catch (Exception e){
-            Log.e("Error",e.getMessage());
-            e.printStackTrace();
-        }
-        return posts;
-    }
-
-    private ValueEventListener createValueEventListener(){
-        return new ValueEventListener() {
+    public void getPosts(PostsCallback callback) {
+        postsValueEventListener = postRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try{
-                    data = new ArrayList<Hashtable<String,Object>>();
-                    for(DataSnapshot d:snapshot.getChildren()){
-                        GenericTypeIndicator<HashMap<String,Object>> typeIndicator=new GenericTypeIndicator<HashMap<String, Object>>() {};
-                        HashMap<String,Object>map=d.getValue(typeIndicator);
-                        if(map!=null) {
-                            Hashtable<String, Object> obj = new Hashtable<String, Object>();
-                            for (String key : map.keySet())
-                                obj.put(key, map.get(key));
-                            data.add(obj);
-                        }
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Log.e("PostFirebaseMsg", e.getMessage());
+                ArrayList<Post> postsList = new ArrayList<>();
+                for (DataSnapshot noteSnapshot : snapshot.getChildren()) {
+                    Post post = noteSnapshot.getValue(Post.class);
+                    postsList.add(post);
                 }
+                callback.onPostsReceived(postsList);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("PostFirebaseOnCancel",error.toString());
+                Log.e("PostFirebaseDAO", "Failed to retrieve posts: " + error.getMessage());
             }
-        };
+        });
     }
-
 }

@@ -21,6 +21,7 @@ import com.smd.alertapp.Adapters.ContactsAdapter;
 import com.smd.alertapp.Adapters.PostsAdapter;
 import com.smd.alertapp.DataLayer.Post.IPostDAO;
 import com.smd.alertapp.DataLayer.Post.PostFirebaseDAO;
+import com.smd.alertapp.DataLayer.Post.PostsCallback;
 import com.smd.alertapp.Entities.Post;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.SessionManager;
@@ -45,7 +46,7 @@ public class PostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-        dao=new PostFirebaseDAO(PostActivity.this);
+        dao = new PostFirebaseDAO(PostActivity.this);
         recyclerView = findViewById(R.id.added_posts);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -54,9 +55,14 @@ public class PostActivity extends AppCompatActivity {
         bottomNav=findViewById(R.id.bottom_navigation);
         sessionManager = new SessionManager(getApplicationContext());
         userDetails = sessionManager.getUserDetails();
-        posts = dao.load();
-        adapter = new PostsAdapter(posts);
-        recyclerView.setAdapter(adapter);
+        dao.getPosts(new PostsCallback() {
+            @Override
+            public void onPostsReceived(ArrayList<Post> postsList) {
+                posts = postsList;
+                adapter = new PostsAdapter(posts, getSupportFragmentManager());
+                recyclerView.setAdapter(adapter);
+            }
+        });
         createPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,9 +73,14 @@ public class PostActivity extends AppCompatActivity {
                     Post newPost = new Post(text, "124301");
                     dao.save(newPost);
                     postText.setText("");
-                    posts = dao.load();
-                    adapter = new PostsAdapter(posts);
-                    recyclerView.setAdapter(adapter);
+                    dao.getPosts(new PostsCallback() {
+                        @Override
+                        public void onPostsReceived(ArrayList<Post> postsList) {
+                            posts = postsList;
+                            adapter = new PostsAdapter(posts, getSupportFragmentManager());
+                            recyclerView.setAdapter(adapter);
+                        }
+                    });
                 }
             }
         });

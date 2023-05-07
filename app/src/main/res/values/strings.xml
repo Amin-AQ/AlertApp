@@ -22,9 +22,10 @@
     <string name="alert_contacts_only">Alert Contacts only</string>
     <string name="alert_helplines_only">Alert helplines only</string>
     <string name="custom_alert_message">Custom alert message</string>
-    <string name="create_post_message">Create Post</string>
+    <string name="create_post_message">Share your experience with others..</string>
+    <string name="new_comment">Write a comment..</string>
     <string name="settings">Settings</string>
     <string name="posts">Posts</string>
     <string name="home">Home</string>
-    <string name="post_comments">Post Comments</string>
+    <string name="post_comments">Comments</string>
 </resources>

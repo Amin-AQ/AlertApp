@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:paddingBottom="8dp"
+    android:layout_margin="4dp"
     android:background="@drawable/outline"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
@@ -12,6 +11,7 @@
         android:layout_height="wrap_content"
         android:hint="Faizan Subhani"
         android:padding="10dp"
+        android:textSize="16dp"
         />
     <TextView
         android:id="@+id/postText"
@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/postUser"
         android:padding="10dp"
+        android:textSize="16dp"
         android:hint="This is a good post, This is a good post, This is a good post, This is a good post."
         />
     <androidx.cardview.widget.CardView
@@ -28,13 +29,14 @@
         android:clickable="true"
         android:layout_below="@id/postText"
         android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="6dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="8dp">
 
         <ImageView
             android:id="@+id/CommentIcon"
             android:paddingStart="32dp"
-            android:padding="10dp"
+            android:padding="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
@@ -43,7 +45,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="8dp"
             android:layout_gravity="center"
             android:text="@string/post_comments"
             android:textSize="18sp" />

@@ -7,12 +7,11 @@
     tools:context=".Activities.PostActivity">
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/fragment_comment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
         android:elevation="10dp"
-        android:layout_margin="5dp"
         android:layout_above="@id/bottom_navigation"/>
 
     <RelativeLayout
@@ -29,13 +28,13 @@
             android:id="@+id/create_post_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:gravity="top|start"
             android:hint="@string/create_post_message"
             android:inputType="textMultiLine"
             android:minLines="2"
-            android:padding="16dp" />
+            android:padding="10dp" />
 
         <ImageButton
             android:id="@+id/create_button"
@@ -51,7 +50,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/added_posts"
-        android:layout_margin="10dp"
+        android:layout_margin="6dp"
         android:layout_below="@id/create_post_layout"
         android:layout_above="@id/bottom_navigation"
         android:layout_width="match_parent"
