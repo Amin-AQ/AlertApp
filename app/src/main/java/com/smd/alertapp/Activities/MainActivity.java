@@ -129,31 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        /*Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-        Message message = Message.creator(
-                        new com.twilio.type.PhoneNumber("whatsapp:+923236037484"),
-                        new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
-                        "Hello, Hope ur doing well. I am not, help me, haaalp. My location is blah blahah")
-                .create();
-        Message message2 = Message.creator(
-                        new com.twilio.type.PhoneNumber("whatsapp:+923244270720"),
-                        new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
-                        "Hello, Hope ur doing well. I am not, help me, haaalp. My location is blah blahah")
-                .create();
-        Message message3 = Message.creator(
-                        new com.twilio.type.PhoneNumber("whatsapp:+923217750712"),
-                        new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
-                        "Hello, Hope ur doing well. I am not, help me, haaalp. My location is blah blahah")
-                .create();
-        Message message4 = Message.creator(
-                        new com.twilio.type.PhoneNumber("whatsapp:+923346119000"),
-                        new com.twilio.type.PhoneNumber("whatsapp:+13204335727"),
-                        "Hello, Hope ur doing well. I am not, help me, haaalp. My location is blah blahah")
-                .create();
-        Log.d("Whatsapp",message.getSid());
-        Log.d("Whatsapp",message2.getSid());
-        Log.d("Whatsapp",message3.getSid());
-        Log.d("Whatsapp",message4.getSid());*/
+
     }
 
     void quickAlert(){
