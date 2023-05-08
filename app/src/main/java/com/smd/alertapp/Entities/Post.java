@@ -11,7 +11,15 @@ public class Post {
     protected String text;
     protected Date date;
 
-    protected byte[] media;
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
+    }
+
+    protected String mediaUrl;
 
     public String getPostId() {
         return postId;
