@@ -2,6 +2,7 @@ package com.smd.alertapp.DataLayer.Post;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,11 +18,13 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.smd.alertapp.Entities.Post;
 import com.smd.alertapp.Entities.User.HelplineUser;
 import com.smd.alertapp.Entities.User.RegularUser;
 import com.smd.alertapp.Entities.User.UserType;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,18 +112,34 @@ public class PostFirebaseDAO implements IPostDAO{
     }
 
     public void uploadFile(Uri fileUri, final FileUploadCallback callback) {
+        String path = fileUri.toString();
+        int lastSlashIndex = path.lastIndexOf("/");
+        String fileName = path.substring(lastSlashIndex + 1, path.length());
+
+        if (TextUtils.isEmpty(fileName)) {
+            if (callback != null) {
+                callback.onError("Invalid file path.");
+            }
+            return;
+        }
+
+        File file = new File(fileUri.getPath());
+        if (!file.exists()) {
+            if (callback != null) {
+                callback.onError("File does not exist at location.");
+            }
+            return;
+        }
         // Get a reference to the Firebase Storage
         final StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
-        // Create a unique file name
-        final String fileName = UUID.randomUUID().toString();
 
         // Create a reference to the file location
         final StorageReference fileRef = storageRef.child("files/" + fileName);
 
-        // Upload the file to Firebase Storage
-        fileRef.putFile(fileUri)
-                .addOnSuccessListener(taskSnapshot -> {
+        UploadTask uploadTask = fileRef.putFile(fileUri);
+
+        // Add an OnCompleteListener to the upload task
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
                     // Get the download URL for the file
                     fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     callback.onFileUpload(uri.toString());

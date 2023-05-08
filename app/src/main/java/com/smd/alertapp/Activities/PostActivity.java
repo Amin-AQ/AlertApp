@@ -81,7 +81,9 @@ public class PostActivity extends AppCompatActivity {
             public void onActivityResult(Uri uri) {
                 // Handle selected file URI
                 if (uri != null) {
+                    Log.e("Uri: ", uri.toString());
                     fileUri = uri;
+                    getRealPathFromURI(getBaseContext(), uri);
                 }
             }
         });
@@ -93,7 +95,8 @@ public class PostActivity extends AppCompatActivity {
                 } else {
                     String text = postText.getText().toString();
                     Post newPost = new Post(text, userDetails.get("username"));
-                    dao.save(newPost, null);
+                    Log.e("Saving post uri: ", fileUri.toString());
+                    dao.save(newPost, fileUri);
                     postText.setText("");
                     dao.getPosts(new PostsCallback() {
                         @Override
@@ -128,24 +131,34 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*"); // Allow any file type to be selected
+                intent.setType("*/*");  // You can set the MIME type according to your requirement
                 startActivityForResult(intent, REQUEST_CODE_PICK_FILE);
             }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_PICK_FILE && resultCode == RESULT_OK && data != null) {
-            Uri fileUri = data.getData();
-            if (fileUri != null) {
-                String filePath = getRealPathFromURI(this, fileUri);
-            }
+            fileUri = data.getData();
+            Log.e("File uri: ", fileUri.toString());
         }
     }
 
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == REQUEST_CODE_PICK_FILE && resultCode == RESULT_OK && data != null) {
+//            Uri fileUri = data.getData();
+//            if (fileUri != null) {
+//                String filePath = getRealPathFromURI(this, fileUri);
+//            }
+//        }
+//    }
+//
     public static String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
