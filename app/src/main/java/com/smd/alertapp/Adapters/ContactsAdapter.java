@@ -24,8 +24,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     private List<Map<String, String>> contacts;
     private ArrayList<Boolean> checkedContacts;
 
-    public ContactsAdapter(List<Map<String, String>> contacts, Set<String> prevCheckedContacts) {
-        this.contacts = contacts;
+    public ContactsAdapter(Set<Map<String, String>> contacts, Set<String> prevCheckedContacts) {
+        this.contacts = new ArrayList<Map<String, String>>();
+        this.contacts.addAll(contacts);
         this.checkedContacts = new ArrayList<>(contacts.size());
 
         // Initialize the checkedContacts list with false values for all contacts
@@ -35,7 +36,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         // Update the checkedContacts list for previously checked contacts
         for (int i = 0; i < contacts.size(); i++) {
-            Map<String, String> contact = contacts.get(i);
+            Map<String, String> contact = this.contacts.get(i);
             if (prevCheckedContacts.contains(contact.get("number"))) {
                 checkedContacts.set(i, true);
             }

@@ -1,8 +1,11 @@
 package com.smd.alertapp.Entities.Alert;
 
+import android.util.Log;
+
 import com.smd.alertapp.Entities.User.HelplineType;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public abstract class Alert {
     protected String alertId;
@@ -10,9 +13,9 @@ public abstract class Alert {
     protected String userId;
     protected HelplineType helplineType;
     protected String location;
-    protected ArrayList<String>contactList;
+    protected Set<String> contactList;
 
-    public Alert(String alertId, AlertType alertType, String userId, HelplineType helplineType, String location, ArrayList<String> contactList) {
+    public Alert(String alertId, AlertType alertType, String userId, HelplineType helplineType, String location, Set<String> contactList) {
         this.alertId = alertId;
         this.alertType = alertType;
         this.userId = userId;
@@ -57,14 +60,14 @@ public abstract class Alert {
         this.location = location;
     }
 
-    public ArrayList<String> getContactList() {
+    public Set<String> getContactList() {
         return contactList;
     }
 
-    public void setContactList(ArrayList<String> contactList) {
+    public void setContactList(Set<String> contactList) {
         this.contactList = contactList;
     }
 
-    public abstract void send();
+    public abstract void send(boolean alertContact, boolean alertHelpline, String username);
     protected void setLocation(){}
 }

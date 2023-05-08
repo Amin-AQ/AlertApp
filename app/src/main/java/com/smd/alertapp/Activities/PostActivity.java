@@ -53,6 +53,7 @@ public class PostActivity extends AppCompatActivity {
         createPost = findViewById(R.id.create_button);
         postText = findViewById(R.id.create_post_text);
         bottomNav=findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.menu_posts);
         sessionManager = new SessionManager(getApplicationContext());
         userDetails = sessionManager.getUserDetails();
         dao.getPosts(new PostsCallback() {

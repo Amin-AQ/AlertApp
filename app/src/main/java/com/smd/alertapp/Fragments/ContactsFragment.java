@@ -34,7 +34,7 @@ import java.util.Set;
 public class ContactsFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<Map<String, String>> contacts;
+    private Set<Map<String, String>> contacts;
     private ContactsAdapter adapter;
     private SharedPreferences sharedPreferences;
 
