@@ -71,7 +71,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         }
         public void bind(Post post) {
             postText.setText(post.getText());
-            postUser.setText(post.getPostId());
+            postUser.setText(post.getUserId());
         }
     }
 }

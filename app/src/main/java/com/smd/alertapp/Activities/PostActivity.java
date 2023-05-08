@@ -1,13 +1,21 @@
 package com.smd.alertapp.Activities;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,16 +40,18 @@ import java.util.List;
 import java.util.Map;
 
 public class PostActivity extends AppCompatActivity {
-
+    private static final int REQUEST_CODE_PICK_FILE = 1;
     BottomNavigationView bottomNav;
-    ImageButton createPost;
+    ImageButton createPost, uploadFile;
     EditText postText;
     ArrayList<Post> posts;
     IPostDAO dao;
     SessionManager sessionManager;
+    ActivityResultLauncher mGetContentLauncher;
     HashMap<String, String> userDetails;
     PostsAdapter adapter;
     RecyclerView recyclerView;
+    Uri fileUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +61,7 @@ public class PostActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         createPost = findViewById(R.id.create_button);
+        uploadFile = findViewById(R.id.upload_post_button);
         postText = findViewById(R.id.create_post_text);
         bottomNav=findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.menu_posts);
@@ -64,6 +75,16 @@ public class PostActivity extends AppCompatActivity {
                 recyclerView.setAdapter(adapter);
             }
         });
+
+        mGetContentLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri uri) {
+                // Handle selected file URI
+                if (uri != null) {
+                    fileUri = uri;
+                }
+            }
+        });
         createPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +93,7 @@ public class PostActivity extends AppCompatActivity {
                 } else {
                     String text = postText.getText().toString();
                     Post newPost = new Post(text, userDetails.get("username"));
-                    dao.save(newPost);
+                    dao.save(newPost, null);
                     postText.setText("");
                     dao.getPosts(new PostsCallback() {
                         @Override
@@ -102,5 +123,41 @@ public class PostActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        uploadFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*"); // Allow any file type to be selected
+                startActivityForResult(intent, REQUEST_CODE_PICK_FILE);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_PICK_FILE && resultCode == RESULT_OK && data != null) {
+            Uri fileUri = data.getData();
+            if (fileUri != null) {
+                String filePath = getRealPathFromURI(this, fileUri);
+            }
+        }
+    }
+
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 }
