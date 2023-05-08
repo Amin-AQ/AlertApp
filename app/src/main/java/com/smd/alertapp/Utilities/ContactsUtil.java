@@ -33,7 +33,7 @@ public class ContactsUtil {
                         if (contactNumber.startsWith("0")) {
                             contactNumber = "+92" + contactNumber.substring(1); // Replace leading 0 with +92 for Pakistan numbers
                         }
-                        if (contactNumber.length() == 13) { // Check if the number is a Pakistan number
+                        if (contactNumber.length() == 13 && contactNumber.startsWith("+92")) { // Check if the number is a Pakistan number
                             Map<String, String> contact = new HashMap<>();
                             contact.put("name", contactName);
                             contact.put("number", contactNumber);

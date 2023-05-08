@@ -27,4 +27,5 @@
     <string name="home">Home</string>
     <string name="post_comments">Post Comments</string>
     <string name="username">Username</string>
+    <string name="send">send</string>
 </resources>
