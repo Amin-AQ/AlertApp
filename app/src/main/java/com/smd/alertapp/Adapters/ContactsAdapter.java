@@ -41,25 +41,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
                 checkedContacts.set(i, true);
             }
         }
-
-       /* // Sort the contacts so that the already checked contacts appear first
-        Collections.sort(contacts, new Comparator<Map<String, String>>() {
-            @Override
-            public int compare(Map<String, String> c1, Map<String, String> c2) {
-                int c1Index = contacts.indexOf(c1);
-                int c2Index = contacts.indexOf(c2);
-                boolean c1Checked = checkedContacts.get(c1Index);
-                boolean c2Checked = checkedContacts.get(c2Index);
-
-                if (c1Checked && !c2Checked) {
-                    return -1;
-                } else if (!c1Checked && c2Checked) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });*/
     }
 
 
