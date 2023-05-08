@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="EMERGENCY ALERT APP"
+            android:textStyle="bold"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Introduction:"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:paddingTop="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is an emergency safety app that allows users to alert their specified contacts, and certain helplines at the time of danger."
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Getting Started:"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Install the app on Play Store and set up a profile. To sign up, enter a username, phone number, password, gender, and date of birth. It leads you to the sign in page for you to login to your registered account."
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Alerts"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="In order to use this feature, provide access to your contacts list. Then, select the contacts you want to notify in case of emergency. Go to phone settings and allow access to location, microphone, camera and SMS to fully use the features of this app and make it work efficiently. Your data is encrypted and secured."
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Custom Alerts"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This feature allows you to customize your emergency alert. By clicking on custom alert message box, you can type your message."
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contact Helplines"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This feature allows you to contact helplines in case of emergency. After clicking on the contact helpline box, it will direct you to a list of helplines. You can select any, and contact them."
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"/>
+    </LinearLayout>
+</ScrollView>

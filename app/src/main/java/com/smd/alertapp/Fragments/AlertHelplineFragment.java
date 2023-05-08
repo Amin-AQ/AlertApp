@@ -1,5 +1,6 @@
 package com.smd.alertapp.Fragments;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -13,15 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.smd.alertapp.Adapters.HelplineListAdapter;
 import com.smd.alertapp.R;
 
 
 public class AlertHelplineFragment extends Fragment {
 
-
-    private String mParam1;
-    private String mParam2;
     private RecyclerView recyclerView;
+    private OnFragmentInteractionListener mListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,6 +45,14 @@ public class AlertHelplineFragment extends Fragment {
             itemDecoration.setDrawable(drawable);
         }
         recyclerView.addItemDecoration(itemDecoration);
+        HelplineListAdapter adapter=new HelplineListAdapter(getContext());
+        recyclerView.setAdapter(adapter);
+
         return view;
     }
+
+    public interface OnFragmentInteractionListener {
+        void onDataPassed(String data);
+    }
+
 }
