@@ -141,10 +141,12 @@ public class PostActivity extends AppCompatActivity {
                 if (itemId == R.id.menu_home) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0, 0);
+                    finish();
                     return true;
                 } else if (itemId == R.id.menu_settings) {
                     startActivity(new Intent(getApplicationContext(), SettingActivity.class));
                     overridePendingTransition(0, 0);
+                    finish();
                     return true;
                 }
                 return false;
