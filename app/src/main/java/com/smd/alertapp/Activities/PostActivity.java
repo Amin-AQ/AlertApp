@@ -1,5 +1,6 @@
 package com.smd.alertapp.Activities;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -31,11 +34,12 @@ import com.smd.alertapp.DataLayer.Post.IPostDAO;
 import com.smd.alertapp.DataLayer.Post.PostFirebaseDAO;
 import com.smd.alertapp.DataLayer.Post.PostsCallback;
 import com.smd.alertapp.Entities.Post;
-import com.smd.alertapp.Entities.User.UserType;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.SessionManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +51,9 @@ public class PostActivity extends AppCompatActivity {
     EditText postText;
     ArrayList<Post> posts;
     IPostDAO dao;
+    ImageView postImage;
     SessionManager sessionManager;
-    ActivityResultLauncher mGetContentLauncher;
+//    ActivityResultLauncher mGetContentLauncher;
     HashMap<String, String> userDetails;
     PostsAdapter adapter;
     RecyclerView recyclerView;
@@ -57,8 +62,6 @@ public class PostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-        sessionManager = new SessionManager(getApplicationContext());
-        userDetails = sessionManager.getUserDetails();
         dao = new PostFirebaseDAO(PostActivity.this);
         recyclerView = findViewById(R.id.added_posts);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -68,26 +71,40 @@ public class PostActivity extends AppCompatActivity {
         postText = findViewById(R.id.create_post_text);
         bottomNav=findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.menu_posts);
+        postImage = findViewById(R.id.post_image);
+        sessionManager = new SessionManager(getApplicationContext());
+        userDetails = sessionManager.getUserDetails();
         dao.getPosts(new PostsCallback() {
             @Override
             public void onPostsReceived(ArrayList<Post> postsList) {
                 posts = postsList;
+                Collections.sort(posts, new Comparator<Post>() {
+                    @Override
+                    public int compare(Post o1, Post o2) {
+                        return o2.getDate().compareTo(o1.getDate());
+                    }
+                });
                 adapter = new PostsAdapter(posts, getSupportFragmentManager());
                 recyclerView.setAdapter(adapter);
             }
         });
 
-        mGetContentLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
-            @Override
-            public void onActivityResult(Uri uri) {
-                // Handle selected file URI
-                if (uri != null) {
-                    Log.e("Uri: ", uri.toString());
-                    fileUri = uri;
-                    getRealPathFromURI(getBaseContext(), uri);
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK){
+                        Intent data = result.getData();
+                            fileUri = data.getData();
+                            Log.e("File uploaded", fileUri.toString());
+                            postImage.setImageURI(fileUri);
+                    } else {
+                        Toast.makeText(PostActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
-        });
+        );
         createPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +120,12 @@ public class PostActivity extends AppCompatActivity {
                         @Override
                         public void onPostsReceived(ArrayList<Post> postsList) {
                             posts = postsList;
+                            Collections.sort(posts, new Comparator<Post>() {
+                                @Override
+                                public int compare(Post o1, Post o2) {
+                                    return o2.getDate().compareTo(o1.getDate());
+                                }
+                            });
                             adapter = new PostsAdapter(posts, getSupportFragmentManager());
                             recyclerView.setAdapter(adapter);
                         }
@@ -116,17 +139,12 @@ public class PostActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.menu_home) {
-                    if(userDetails.get("usertype").equals(UserType.REGULAR.toString()))
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    else
-                        startActivity(new Intent(getApplicationContext(), HelplineMainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0, 0);
-                    finish();
                     return true;
                 } else if (itemId == R.id.menu_settings) {
                     startActivity(new Intent(getApplicationContext(), SettingActivity.class));
                     overridePendingTransition(0, 0);
-                    finish();
                     return true;
                 }
                 return false;
@@ -136,47 +154,11 @@ public class PostActivity extends AppCompatActivity {
         uploadFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");  // You can set the MIME type according to your requirement
-                startActivityForResult(intent, REQUEST_CODE_PICK_FILE);
+                Intent photoPicker = new Intent();
+                photoPicker.setAction(Intent.ACTION_GET_CONTENT);
+                photoPicker.setType("image/*");
+                activityResultLauncher.launch(photoPicker);
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_PICK_FILE && resultCode == RESULT_OK && data != null) {
-            fileUri = data.getData();
-            Log.e("File uri: ", fileUri.toString());
-        }
-    }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == REQUEST_CODE_PICK_FILE && resultCode == RESULT_OK && data != null) {
-//            Uri fileUri = data.getData();
-//            if (fileUri != null) {
-//                String filePath = getRealPathFromURI(this, fileUri);
-//            }
-//        }
-//    }
-//
-    public static String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
     }
 }
