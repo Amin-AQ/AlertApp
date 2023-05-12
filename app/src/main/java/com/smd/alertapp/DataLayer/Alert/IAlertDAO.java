@@ -4,4 +4,6 @@ import com.smd.alertapp.Entities.Alert.Alert;
 
 public interface IAlertDAO {
     void save(Alert alert);
+    void getQuickAlerts(QuickAlertsCallback callback);
+    void getCustomAlerts(CustomAlertsCallback callback);
 }

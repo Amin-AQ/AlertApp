@@ -10,7 +10,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.smd.alertapp.Entities.Alert.Alert;
 import com.smd.alertapp.Entities.Alert.AlertType;
@@ -18,7 +17,6 @@ import com.smd.alertapp.Entities.Alert.QuickAlert;
 import com.smd.alertapp.Entities.Alert.CustomAlert;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 public class AlertFirebaseDAO implements IAlertDAO{
@@ -27,13 +25,13 @@ public class AlertFirebaseDAO implements IAlertDAO{
     FirebaseDatabase db;
     DatabaseReference ref, quickRef, customRef;
     ArrayList<Hashtable<String,Object>>data;
-    AlertFirebaseDAO(Context ctx){
+    ValueEventListener quickAlertsListener,customAlertsListener;
+    public AlertFirebaseDAO(Context ctx){
         context=ctx;
+        db=FirebaseDatabase.getInstance();
         ref= db.getReference();
         quickRef=db.getReference("QuickAlert");
         customRef=db.getReference("CustomAlert");
-        quickRef.addValueEventListener(createValueEventListener());
-        customRef.addValueEventListener(createValueEventListener());
     }
 
     @Override
@@ -52,11 +50,12 @@ public class AlertFirebaseDAO implements IAlertDAO{
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists())
-                    // User already exists, display toast
+                    // Alert already exists, display toast
                     Toast.makeText(context, "Alert already sent", Toast.LENGTH_SHORT).show();
-                else
-                    // Alert does not exist, save to database
+                else {// Alert does not exist, save to database
                     alertRef.setValue(alert);
+                    Toast.makeText(context, "Alert sent to "+alert.getHelplineType(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -67,32 +66,44 @@ public class AlertFirebaseDAO implements IAlertDAO{
         });
     }
 
-    private ValueEventListener createValueEventListener(){
-        return new ValueEventListener() {
+    @Override
+    public void getQuickAlerts(QuickAlertsCallback callback){
+        quickAlertsListener=quickRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try{
-                    data = new ArrayList<Hashtable<String,Object>>();
-                    for(DataSnapshot d:snapshot.getChildren()){
-                        GenericTypeIndicator<HashMap<String,Object>> typeIndicator=new GenericTypeIndicator<HashMap<String, Object>>() {};
-                        HashMap<String,Object>map=d.getValue(typeIndicator);
-                        if(map!=null) {
-                            Hashtable<String, Object> obj = new Hashtable<String, Object>();
-                            for (String key : map.keySet())
-                                obj.put(key, map.get(key));
-                            data.add(obj);
-                        }
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Log.e("UserFirebaseMsg", e.getMessage());
+                ArrayList<Alert>quickAlerts=new ArrayList<Alert>();
+                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    Alert alert=dataSnapshot.getValue(QuickAlert.class);
+                    quickAlerts.add(alert);
                 }
+                callback.onQuickAlertsReceived(quickAlerts);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("UserFirebaseOnCancel",error.toString());
+                Log.e("AlertFirebaseDAO", "Failed to retrieve quick alerts: " + error.getMessage());
             }
-        };
+        });
+
+    }
+
+    @Override
+    public void getCustomAlerts(CustomAlertsCallback callback){
+        customAlertsListener=customRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Alert>customAlerts=new ArrayList<Alert>();
+                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    Alert alert=dataSnapshot.getValue(CustomAlert.class);
+                    customAlerts.add(alert);
+                }
+                callback.onCustomAlertsReceived(customAlerts);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

@@ -31,6 +31,7 @@ import com.smd.alertapp.DataLayer.Post.IPostDAO;
 import com.smd.alertapp.DataLayer.Post.PostFirebaseDAO;
 import com.smd.alertapp.DataLayer.Post.PostsCallback;
 import com.smd.alertapp.Entities.Post;
+import com.smd.alertapp.Entities.User.UserType;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.SessionManager;
 
@@ -56,6 +57,8 @@ public class PostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+        sessionManager = new SessionManager(getApplicationContext());
+        userDetails = sessionManager.getUserDetails();
         dao = new PostFirebaseDAO(PostActivity.this);
         recyclerView = findViewById(R.id.added_posts);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -65,8 +68,6 @@ public class PostActivity extends AppCompatActivity {
         postText = findViewById(R.id.create_post_text);
         bottomNav=findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.menu_posts);
-        sessionManager = new SessionManager(getApplicationContext());
-        userDetails = sessionManager.getUserDetails();
         dao.getPosts(new PostsCallback() {
             @Override
             public void onPostsReceived(ArrayList<Post> postsList) {
@@ -115,12 +116,17 @@ public class PostActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.menu_home) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    if(userDetails.get("usertype").equals(UserType.REGULAR.toString()))
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    else
+                        startActivity(new Intent(getApplicationContext(), HelplineMainActivity.class));
                     overridePendingTransition(0, 0);
+                    finish();
                     return true;
                 } else if (itemId == R.id.menu_settings) {
                     startActivity(new Intent(getApplicationContext(), SettingActivity.class));
                     overridePendingTransition(0, 0);
+                    finish();
                     return true;
                 }
                 return false;

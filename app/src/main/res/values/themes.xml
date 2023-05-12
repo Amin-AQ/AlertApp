@@ -13,7 +13,8 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="MyDatePicker" >
+
+    <style name="MyDatePicker">
         <!-- Text color -->
         <item name="android:textColorPrimary">#989898</item>
         <!-- Divider color -->
@@ -24,10 +25,27 @@
         <item name="android:windowBackground">#F6E5E5</item>
         <item name="android:windowFullscreen">true</item>
     </style>
+
     <style name="FragmentTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">#F6E5E5</item>
         <item name="android:textColor">#2B2A2A</item>
         <item name="android:buttonTint">#2B2A2A</item>
+        <item name="android:textColorHint">#4A4A4A</item>
+    </style>
+
+    <style name="Theme.AlertApp.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+        <!-- Radius of the outer bound of widgets to make the rounded corners -->
+        <item name="appWidgetRadius">16dp</item>
+        <!--
+        Radius of the inner view's bound of widgets to make the rounded corners.
+        It needs to be 8dp or less than the value of appWidgetRadius
+        -->
+        <item name="appWidgetInnerRadius">8dp</item>
+    </style>
+
+    <style name="Theme.AlertApp.AppWidgetContainer" parent="Theme.AlertApp.AppWidgetContainerParent">
+        <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
+        <item name="appWidgetPadding">16dp</item>
     </style>
 
 </resources>

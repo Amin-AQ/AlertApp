@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.smd.alertapp.Activities.LoginActivity;
+import com.smd.alertapp.Entities.User.HelplineType;
 import com.smd.alertapp.Entities.User.UserType;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class SessionManager {
     private static final String KEY_PASSWORD="password";
     private static final String KEY_USERTYPE="usertype";
     private static final String KEY_USERNAME="username";
+    private static final String KEY_HELPLINETYPE="helplinetype";
 
     public SessionManager(Context context){
         this._context=context;
@@ -29,19 +31,21 @@ public class SessionManager {
         editor= pref.edit();
     }
 
-    public void createLoginSession(String id, String username, String password, UserType userType){
+    public void createLoginSession(String id, String username, String password, UserType userType, HelplineType helplineType){
         editor.putBoolean(IS_LOGIN,true);
         editor.putString(KEY_ID,id);
         editor.putString(KEY_PASSWORD,password);
         editor.putString(KEY_USERNAME,username);
         editor.putString(KEY_USERTYPE,userType.toString());
+        if(helplineType!=null)
+            editor.putString(KEY_HELPLINETYPE,helplineType.toString());
         editor.commit();
     }
 
     public Boolean isLoggedIn(){
         return pref.getBoolean(IS_LOGIN,false);
     }
-
+    public String getUserType(){return pref.getString(KEY_USERTYPE,null);}
     public Boolean checkLogin(){
         Boolean loggedIn=this.isLoggedIn();
         if(!loggedIn){
@@ -59,6 +63,7 @@ public class SessionManager {
         user.put(KEY_USERNAME,pref.getString(KEY_USERNAME,null));
         user.put(KEY_PASSWORD,pref.getString(KEY_PASSWORD,null));
         user.put(KEY_USERTYPE,pref.getString(KEY_USERTYPE,null));
+        user.put(KEY_HELPLINETYPE,pref.getString(KEY_HELPLINETYPE,null));
         return user;
     }
 

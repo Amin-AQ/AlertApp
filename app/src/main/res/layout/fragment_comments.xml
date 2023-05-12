@@ -3,36 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/FragmentTheme">
-    <LinearLayout
+
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:layout_alignParentTop="true"
+        android:elevation="5dp"
+        android:src="@drawable/back_button" />
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/comment_box_heading"
-        >
-        <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/back_button" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="11dp"
-            android:paddingLeft="83dp"
-            android:hint="Comments"
-            android:textSize="23dp"
-            android:textFontWeight="400"/>
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:paddingTop="11dp"
+        android:textAlignment="center"
+        android:elevation="4dp"
+        android:hint="@string/comments"
+        android:textSize="23sp"
+        android:textFontWeight="400"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/comment_box"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/comment_box_heading"
+        android:layout_below="@id/back_button"
         android:layout_above="@+id/new_comment"
+        android:elevation="4dp"
         />
     <RelativeLayout
         android:id="@+id/new_comment"
+        android:elevation="5dp"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginStart="3dp"

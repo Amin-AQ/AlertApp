@@ -1,13 +1,14 @@
 package com.smd.alertapp.Entities.Alert;
 
-import android.util.Log;
+import android.content.Context;
 
+import com.smd.alertapp.DataLayer.Alert.IAlertDAO;
 import com.smd.alertapp.Entities.User.HelplineType;
 
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.Set;
 
-public abstract class Alert {
+public abstract class Alert implements Serializable {
     protected String alertId;
     protected AlertType alertType;
     protected String userId;
@@ -68,6 +69,6 @@ public abstract class Alert {
         this.contactList = contactList;
     }
 
-    public abstract void send(boolean alertContact, boolean alertHelpline, String username);
+    public abstract void send(Context ctx, boolean alertContact, boolean alertHelpline, String username, IAlertDAO dao);
     protected void setLocation(){}
 }

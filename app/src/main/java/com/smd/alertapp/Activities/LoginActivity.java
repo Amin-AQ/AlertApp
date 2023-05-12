@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +22,6 @@ import com.smd.alertapp.Entities.User.User;
 import com.smd.alertapp.Entities.User.UserType;
 import com.smd.alertapp.Utilities.SessionManager;
 import com.smd.alertapp.R;
-
-
-import java.util.Arrays;
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -108,9 +103,9 @@ public class LoginActivity extends AppCompatActivity {
                 if(u!=null) {
                     if(u.getPassword().equals(pwdText.getText().toString())) {
                         if (u.getUserType() == UserType.REGULAR)
-                            sessionManager.createLoginSession(((RegularUser) u).getPhoneNumber(),u.getUsername(), u.getPassword(), u.getUserType());
+                            sessionManager.createLoginSession(((RegularUser) u).getPhoneNumber(),u.getUsername(), u.getPassword(), u.getUserType(), null);
                         else if (u.getUserType() == UserType.HELPLINE)
-                            sessionManager.createLoginSession(((HelplineUser) u).getId(),u.getUsername(), u.getPassword(), u.getUserType());
+                            sessionManager.createLoginSession(((HelplineUser) u).getId(),u.getUsername(), u.getPassword(), u.getUserType(), ((HelplineUser)u).getHelplineType());
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -118,7 +113,11 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
                         // start main activity for the user
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent;
+                        if(u.getUserType() == UserType.REGULAR)
+                            intent = new Intent(LoginActivity.this, MainActivity.class);
+                        else
+                            intent = new Intent(LoginActivity.this, HelplineMainActivity.class);
                         startActivity(intent);
                         finish();
                     }
@@ -136,7 +135,6 @@ public class LoginActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 Log.e("ExceptionMsg",e.getMessage());
-               // Log.e("ExceptionCause", Objects.requireNonNull(e.getCause()).toString());
                 e.printStackTrace();
             }
             return null;

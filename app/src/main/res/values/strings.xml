@@ -32,4 +32,25 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="send">send</string>
+    <string name="emergency_alert_app">EMERGENCY ALERT APP</string>
+    <string name="introduction">Introduction:</string>
+    <string name="this_is_an_emergency_safety_app_that_allows_users_to_alert_their_specified_contacts_and_certain_helplines_at_the_time_of_danger">This is an emergency safety app that allows users to alert their specified contacts, and certain helplines at the time of danger.</string>
+    <string name="getting_started">Getting Started:</string>
+    <string name="install_the_app_on_play_store_and_set_up_a_profile_to_sign_up_enter_a_username_phone_number_password_gender_and_date_of_birth_it_leads_you_to_the_sign_in_page_for_you_to_login_to_your_registered_account">Install the app on Play Store and set up a profile. To sign up, enter a username, phone number, password, gender, and date of birth. It leads you to the sign in page for you to login to your registered account.</string>
+    <string name="send_alerts">Send Alerts</string>
+    <string name="in_order_to_use_this_feature_provide_access_to_your_contacts_list_then_select_the_contacts_you_want_to_notify_in_case_of_emergency_go_to_phone_settings_and_allow_access_to_location_microphone_camera_and_sms_to_fully_use_the_features_of_this_app_and_make_it_work_efficiently_your_data_is_encrypted_and_secured">In order to use this feature, provide access to your contacts list. Then, select the contacts you want to notify in case of emergency. Go to phone settings and allow access to location, microphone, camera and SMS to fully use the features of this app and make it work efficiently. Your data is encrypted and secured.</string>
+    <string name="custom_alerts">Custom Alerts</string>
+    <string name="this_feature_allows_you_to_customize_your_emergency_alert_by_clicking_on_custom_alert_message_box_you_can_type_your_message">This feature allows you to customize your emergency alert. By clicking on custom alert message box, you can type your message.</string>
+    <string name="contact_helplines">Contact Helplines</string>
+    <string name="this_feature_allows_you_to_contact_helplines_in_case_of_emergency_after_clicking_on_the_contact_helpline_box_it_will_direct_you_to_a_list_of_helplines_you_can_select_any_and_contact_them">This feature allows you to contact helplines in case of emergency. After clicking on the contact helpline box, it will direct you to a list of helplines. You can select any, and contact them.</string>
+    <string name="user_manual">User Manual</string>
+    <string name="logout">Logout</string>
+    <string name="credits"><![CDATA[This app is part of a project developed by 4 exceptional students of FAST NU: Faizan (Project Lead), Amin, Maha & Fatima. We hope and dream that one day this app will go into production and help citizens in getting timely help in urgent situations.]]></string>
+    <string name="comments">Comments</string>
+    <string name="click_to_view_details">Click to view details</string>
+    <string name="alert_type">Alert Type</string>
+    <string name="quick_alerts">Quick Alerts</string>
+    <string name="appwidget_text">Emergency Alert App</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 </resources>

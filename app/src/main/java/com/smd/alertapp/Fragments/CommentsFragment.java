@@ -99,12 +99,8 @@ public class CommentsFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Close the fragment and navigate back to the same note in the NoteActivity
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 fragmentManager.popBackStack();
-                Intent intent = new Intent(getActivity(), PostActivity.class);
-                intent.putExtra("postId", postId);
-                startActivity(intent);
             }
         });
 

@@ -62,7 +62,11 @@ public class UserFirebaseDAO implements IUserDAO{
                         Toast.makeText(context, "User already exists", Toast.LENGTH_SHORT).show();
                     else
                         // User does not exist, save to database
-                        userRef.setValue(user);
+                        userRef.setValue(user).addOnCompleteListener(task -> {
+                            Toast.makeText( context,"User registered successfully", Toast.LENGTH_LONG).show();
+                        }).addOnFailureListener(task -> {
+                            Toast.makeText( context,"Error registering user, please check internet", Toast.LENGTH_LONG).show();
+                        });;
                 }
 
                 @Override
