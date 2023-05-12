@@ -1,5 +1,7 @@
 package com.smd.alertapp.Fragments;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -31,19 +33,25 @@ import com.smd.alertapp.R;
 public class AlertFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_ALERT = "alert";
+    private static final String ARG_ALERT_ID = "alertid";
+    private static final String ARG_USER_ID = "userid";
+    private static final String ARG_LOCATION_URI = "location";
+    private static final String ARG_ALERT_TYPE = "alerttype";
     TextView alertType,userId;
     ImageButton backBtn, locationBtn;
-    Alert alert;
+    String UserId,AlertId,LocationURI,Alert_Type;
 
     public AlertFragment() {
         // Required empty public constructor
     }
 
-    public static AlertFragment newInstance(Alert a) {
+    public static AlertFragment newInstance(String alertid, String userid, String loc, String alerttype) {
         AlertFragment fragment = new AlertFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_ALERT,a);
+        args.putString(ARG_ALERT_ID,alertid);
+        args.putString(ARG_USER_ID,userid);
+        args.putString(ARG_LOCATION_URI,loc);
+        args.putString(ARG_ALERT_TYPE,alerttype);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,9 +59,6 @@ public class AlertFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            alert= (Alert) getArguments().getSerializable(ARG_ALERT);
-        }
     }
 
     @Override
@@ -61,10 +66,18 @@ public class AlertFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_alert, container, false);
+        if (getArguments() != null) {
+            UserId=getArguments().getString(ARG_USER_ID);
+            AlertId=getArguments().getString(ARG_ALERT_ID);
+            LocationURI=getArguments().getString(ARG_LOCATION_URI);
+            Alert_Type=getArguments().getString(ARG_ALERT_TYPE);
+        }
         alertType=v.findViewById(R.id.alerttype);
         userId=v.findViewById(R.id.userid);
         locationBtn=v.findViewById(R.id.locationbtn);
         backBtn=v.findViewById(R.id.back_button);
+        alertType.setText(Alert_Type);
+        userId.setText(UserId);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,8 +88,8 @@ public class AlertFragment extends Fragment {
         locationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uri=alert.getLocation();
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(LocationURI));
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 getActivity().getApplicationContext().startActivity(intent);
             }
         });
@@ -95,7 +108,7 @@ public class AlertFragment extends Fragment {
     }
 
     void callUser(){
-        Intent i = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+alert.getUserId()));
+        Intent i = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+UserId));
         startActivity(i);
     }
 

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -31,8 +32,8 @@ public class HelplineMainActivity extends AppCompatActivity {
     RecyclerView quickAlertView, customAlertView;
     HashMap<String, String> userDetails;
     IAlertDAO alertDAO;
-    ArrayList<QuickAlert> quickAlerts;
-    ArrayList<CustomAlert>customAlerts;
+    ArrayList<Alert> quickAlerts;
+    ArrayList<Alert> customAlerts;
     BottomNavigationView bottomNav;
     AlertAdapter quickAlertAdapter, customAlertAdaptor;
     @Override
@@ -71,14 +72,17 @@ public class HelplineMainActivity extends AppCompatActivity {
         alertDAO.getQuickAlerts(new QuickAlertsCallback() {
             @Override
             public void onQuickAlertsReceived(ArrayList<Alert> alerts) {
-                quickAlertAdapter=new AlertAdapter(alerts,getSupportFragmentManager());
+                quickAlerts=alerts;
+                Log.d("Deb",quickAlerts.toString());
+                quickAlertAdapter=new AlertAdapter(quickAlerts,getSupportFragmentManager());
                 quickAlertView.setAdapter(quickAlertAdapter);
             }
         });
         alertDAO.getCustomAlerts(new CustomAlertsCallback() {
             @Override
             public void onCustomAlertsReceived(ArrayList<Alert> alerts) {
-                customAlertAdaptor=new AlertAdapter(alerts,getSupportFragmentManager());
+                customAlerts=alerts;
+                customAlertAdaptor=new AlertAdapter(customAlerts,getSupportFragmentManager());
                 customAlertView.setAdapter(customAlertAdaptor);
             }
         });

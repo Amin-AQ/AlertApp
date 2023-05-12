@@ -21,9 +21,12 @@ import java.util.Set;
 public class CustomAlert extends Alert{
 
     String message;
-    public CustomAlert(String alertId, String userId, HelplineType helplineType, String location, Set<String> contactList, String message) {
+    public CustomAlert(String alertId, String userId, HelplineType helplineType, String location, List<String> contactList, String message) {
         super(alertId, AlertType.CUSTOM_ALERT, userId, helplineType, location, contactList);
         this.message=message;
+    }
+
+    public CustomAlert() {
     }
 
     @Override

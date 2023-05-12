@@ -52,9 +52,12 @@ import com.smd.alertapp.Utilities.SessionManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.UUID;
 
@@ -198,7 +201,8 @@ public class MainActivity extends AppCompatActivity {
         locationUtil.getLocation(new LocationCallback() {
             @Override
             public void onLocationObtained(String location) {
-                QuickAlert alert = new QuickAlert(UUID.randomUUID().toString(), userDetails.get("phonenumber"), HelplineType.POLICE, location, mSelectedContacts);
+                List<String> m = new ArrayList<String>(mSelectedContacts);
+                QuickAlert alert = new QuickAlert(UUID.randomUUID().toString(), userDetails.get("id"), HelplineType.POLICE, location, m);
                 alert.send(MainActivity.this,alertAll.isChecked()||alertContacts.isChecked(),alertAll.isChecked()||alertHelplines.isChecked(),userDetails.get("username"), alertDAO);
             }
         });
@@ -211,7 +215,8 @@ public class MainActivity extends AppCompatActivity {
         locationUtil.getLocation(new LocationCallback() {
             @Override
             public void onLocationObtained(String location) {
-                CustomAlert alert = new CustomAlert(UUID.randomUUID().toString(), userDetails.get("phonenumber"), HelplineType.POLICE, location, mSelectedContacts, customAlertMsg.getText().toString());
+                List<String> m = new ArrayList<String>(mSelectedContacts);
+                CustomAlert alert = new CustomAlert(UUID.randomUUID().toString(), userDetails.get("id"), HelplineType.POLICE, location, m, customAlertMsg.getText().toString());
                 alert.send(MainActivity.this,alertAll.isChecked()||alertContacts.isChecked(),alertAll.isChecked()||alertHelplines.isChecked(),userDetails.get("username"), alertDAO);
             }
         });

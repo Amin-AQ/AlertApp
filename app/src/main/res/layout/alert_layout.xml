@@ -14,7 +14,7 @@
     android:theme="@style/FragmentTheme">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="1dp">
 
         <TextView
@@ -22,9 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:hint="Faizan Subhani"
             android:padding="5dp"
-            android:textSize="16sp"
+            android:textSize="11sp"
             />
 
         <TextView
@@ -33,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/alertid"
             android:layout_alignParentStart="true"
-            android:hint="Faizan Subhani"
             android:padding="5dp"
             android:textSize="16sp"
             />
@@ -42,7 +40,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:hint="Faizan Subhani"
             android:textStyle="bold"
             android:padding="10dp"
             android:textSize="16sp"

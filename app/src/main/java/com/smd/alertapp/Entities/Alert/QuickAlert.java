@@ -19,8 +19,11 @@ import java.util.List;
 import java.util.Set;
 
 public class QuickAlert extends Alert {
-    public QuickAlert(String alertId, String userId, HelplineType helplineType, String location, Set<String> contactList) {
+    public QuickAlert(String alertId, String userId, HelplineType helplineType, String location, List<String> contactList) {
         super(alertId, AlertType.QUICK_ALERT, userId, helplineType, location, contactList);
+    }
+
+    public QuickAlert() {
     }
 
     @Override

@@ -33,7 +33,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
     public AlertViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.alert_layout, parent, false);
-        return new AlertAdapter.AlertViewHolder(view);
+        return new AlertViewHolder(view);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                AlertFragment fragment=AlertFragment.newInstance(alert);
+                AlertFragment fragment=AlertFragment.newInstance(alert.getAlertId(),alert.getUserId(),alert.getLocation(),alert.getAlertType().toString());
                 fragmentTransaction.replace(R.id.fragment_alert_container, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -56,7 +56,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
 
     @Override
     public int getItemCount() {
-        return 0;
+        return alerts.size();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
         return position;
     }
 
-    public class AlertViewHolder extends RecyclerView.ViewHolder{
+    public static class AlertViewHolder extends RecyclerView.ViewHolder{
 
         CardView alertCard;
         TextView alertIdTxt, alertUserIdTxt, alertTypeTxt;

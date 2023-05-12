@@ -23,8 +23,7 @@
         android:id="@+id/alerttype"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textAlignment="center"
-        android:text="@string/alert_type" />
+        android:textAlignment="center" />
 
     <TextView
         android:layout_width="match_parent"
@@ -34,16 +33,15 @@
         android:textStyle="italic"
         android:textColor="#008EFF"
         android:textAlignment="center"
-        android:layout_below="@id/alerttype"
-        android:text="@string/alert_type" />
+        android:layout_below="@id/alerttype" />
 
     <ImageButton
         android:layout_marginTop="20dp"
         android:tooltipText="View Location"
         android:id="@+id/locationbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/outline"
         android:elevation="5dp"
         android:src="@drawable/location"
         android:layout_centerHorizontal="true"
