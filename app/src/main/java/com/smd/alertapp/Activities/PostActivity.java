@@ -34,6 +34,7 @@ import com.smd.alertapp.DataLayer.Post.IPostDAO;
 import com.smd.alertapp.DataLayer.Post.PostFirebaseDAO;
 import com.smd.alertapp.DataLayer.Post.PostsCallback;
 import com.smd.alertapp.Entities.Post;
+import com.smd.alertapp.Entities.User.UserType;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.SessionManager;
 
@@ -139,7 +140,10 @@ public class PostActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.menu_home) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    if(userDetails.get("usertype").equals(UserType.REGULAR.toString()))
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    else
+                        startActivity(new Intent(getApplicationContext(), HelplineMainActivity.class));
                     overridePendingTransition(0, 0);
                     finish();
                     return true;

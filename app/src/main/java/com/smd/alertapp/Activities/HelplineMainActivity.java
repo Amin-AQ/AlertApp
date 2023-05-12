@@ -1,11 +1,16 @@
 package com.smd.alertapp.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.smd.alertapp.Adapters.AlertAdapter;
 import com.smd.alertapp.DataLayer.Alert.AlertFirebaseDAO;
 import com.smd.alertapp.DataLayer.Alert.CustomAlertsCallback;
@@ -28,6 +33,7 @@ public class HelplineMainActivity extends AppCompatActivity {
     IAlertDAO alertDAO;
     ArrayList<QuickAlert> quickAlerts;
     ArrayList<CustomAlert>customAlerts;
+    BottomNavigationView bottomNav;
     AlertAdapter quickAlertAdapter, customAlertAdaptor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +41,32 @@ public class HelplineMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_helpline_main);
         sessionManager=new SessionManager(getApplicationContext());
         userDetails=sessionManager.getUserDetails();
+        bottomNav=findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.menu_home);
         quickAlertView=findViewById(R.id.quickalertsview);
         customAlertView=findViewById(R.id.customalertsview);
         quickAlertView.setLayoutManager(new LinearLayoutManager(this));
         quickAlertView.setHasFixedSize(true);
         customAlertView.setLayoutManager(new LinearLayoutManager(this));
         customAlertView.setHasFixedSize(true);
+        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.menu_posts) {
+                    startActivity(new Intent(getApplicationContext(), PostActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    return true;
+                } else if (itemId == R.id.menu_settings) {
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        });
         alertDAO=new AlertFirebaseDAO(getApplicationContext());
         alertDAO.getQuickAlerts(new QuickAlertsCallback() {
             @Override
