@@ -38,18 +38,12 @@ public class AlertFirebaseDAO implements IAlertDAO{
     public void save(Alert alert) {
         DatabaseReference alertRef;
         String key= alert.getAlertId();
-        QuickAlert quickAlert=null;
-        CustomAlert customAlert=null;
-        if(alert.getAlertType()== AlertType.QUICK_ALERT){
-            quickAlert=(QuickAlert) alert;
+
+        if(alert.getAlertType()== AlertType.QUICK_ALERT)
             alertRef=quickRef.child(key);
-        }
-        else{
-            customAlert=(CustomAlert) alert;
+        else
             alertRef=customRef.child(key);
-        }
-        QuickAlert finalQuickAlert = quickAlert;
-        CustomAlert finalCustomAlert = customAlert;
+
         alertRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -57,10 +51,10 @@ public class AlertFirebaseDAO implements IAlertDAO{
                     // Alert already exists, display toast
                     Toast.makeText(context, "Alert already sent", Toast.LENGTH_SHORT).show();
                 else {// Alert does not exist, save to database
-                    if(alert.getAlertType()==AlertType.QUICK_ALERT)
-                        alertRef.setValue(finalQuickAlert);
-                    else
-                        alertRef.setValue(finalCustomAlert);
+                    alertRef.setValue(alert);
+                    if(alert.getAlertType()==AlertType.CUSTOM_ALERT) {
+                        alertRef.child("message").setValue(((CustomAlert) alert).getMessage());
+                    }
                     Toast.makeText(context, "Alert sent to "+alert.getHelplineType(), Toast.LENGTH_SHORT).show();
                 }
             }

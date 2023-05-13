@@ -89,11 +89,11 @@ public class AlertFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(LocationURI));
-                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);  // NEED this flag to launch intent from fragment
                 getActivity().getApplicationContext().startActivity(intent);
             }
         });
-        userId.setOnClickListener(new View.OnClickListener() {
+        userId.setOnClickListener(new View.OnClickListener() {  // phone number, on click => call that number
             @Override
             public void onClick(View v) {
                 String[]perms=new String[]{Manifest.permission.CALL_PHONE};

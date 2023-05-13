@@ -29,13 +29,13 @@ import java.util.HashMap;
 public class HelplineMainActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
-    RecyclerView quickAlertView, customAlertView;
+    RecyclerView quickAlertView, customAlertView;  // to display list of alerts
     HashMap<String, String> userDetails;
     IAlertDAO alertDAO;
     ArrayList<Alert> quickAlerts;
-    ArrayList<Alert> customAlerts;
-    BottomNavigationView bottomNav;
-    AlertAdapter quickAlertAdapter, customAlertAdaptor;
+    ArrayList<Alert> customAlerts;      // store quick alerts list
+    BottomNavigationView bottomNav;     // navigate to posts and settings
+    AlertAdapter quickAlertAdapter, customAlertAdaptor; // individual items in the recycler view
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

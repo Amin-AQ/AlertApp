@@ -75,7 +75,7 @@ public class HelplineUser extends User{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(a,"You have selected " +lables.get(which),Toast.LENGTH_LONG).show();
-                Intent i = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+lables.get(which).getValue()));
+                Intent i = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+lables.get(which).getValue()));//   tel:1122
                 a.startActivity(i);
 
             }

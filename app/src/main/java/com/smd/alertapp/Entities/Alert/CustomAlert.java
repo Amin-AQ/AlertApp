@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class CustomAlert extends Alert{
 
-    String message;
+    private String message;
     public CustomAlert(String alertId, String userId, HelplineType helplineType, String location, List<String> contactList, String message) {
         super(alertId, AlertType.CUSTOM_ALERT, userId, helplineType, location, contactList);
         this.message=message;
@@ -43,8 +43,10 @@ public class CustomAlert extends Alert{
                 smsManager.sendTextMessage(contact, null, "Location:\n"+location, null, null);
                 Toast.makeText(ctx,"Alert SMS sent to "+ contact,Toast.LENGTH_SHORT).show();
             }
-            if(!alertHelplines)
-                helplineType=null;
+            if(!alertHelplines) {
+                helplineType = null;
+                dao.save(CustomAlert.this);
+            }
         }
         if(alertHelplines){
             showDialog(ctx,dao);
@@ -76,5 +78,13 @@ public class CustomAlert extends Alert{
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +27,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -39,6 +42,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.smd.alertapp.DataLayer.Alert.AlertFirebaseDAO;
 import com.smd.alertapp.DataLayer.Alert.IAlertDAO;
 import com.smd.alertapp.Entities.Alert.CustomAlert;
@@ -51,6 +57,7 @@ import com.smd.alertapp.Utilities.LocationUtil;
 import com.smd.alertapp.Utilities.PermissionUtil;
 import com.smd.alertapp.Utilities.SessionManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,6 +70,8 @@ import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_AUDIO_CAPTURE = 10;
+    private static final int REQUEST_VIDEO_CAPTURE = 11;
     public static boolean taskFlag=false;
     EditText customAlertMsg;
     SessionManager sessionManager;
@@ -73,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView micView, videoView, sendBtnView;
     FrameLayout contactFrag;
     IAlertDAO alertDAO;
-
+    private File audioFile=null;
+    private File videoFile=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +173,8 @@ public class MainActivity extends AppCompatActivity {
                 if(!hasPermissions(MainActivity.this,perms)){
                     ActivityCompat.requestPermissions(MainActivity.this,perms,5);
                 }
-                    //callHelpline();
+                else
+                    recordAudio();
             }
         });
 
@@ -174,6 +185,8 @@ public class MainActivity extends AppCompatActivity {
                 if(!hasPermissions(MainActivity.this,perms)){
                     ActivityCompat.requestPermissions(MainActivity.this,perms,6);
                 }
+                else
+                    recordVideo();
             }
         });
 
@@ -234,6 +247,29 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    private void recordAudio() {
+        // Create a new audio file
+        String audioFileName = "audio_" + System.currentTimeMillis() + ".3gp";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        audioFile = new File(storageDir, audioFileName);
+
+        // Create an intent to record audio
+        Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(audioFile));
+        startActivityForResult(intent, REQUEST_AUDIO_CAPTURE);
+    }
+
+    private void recordVideo() {
+        // Create a new video file
+        String videoFileName = "video_" + System.currentTimeMillis() + ".mp4";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+        videoFile = new File(storageDir, videoFileName);
+
+        // Create an intent to record video
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(videoFile));
+        startActivityForResult(intent, REQUEST_VIDEO_CAPTURE);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -261,10 +297,10 @@ public class MainActivity extends AppCompatActivity {
             HelplineUser.callHelpline(MainActivity.this);
         }
         else if(requestCode==5&&grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            // record audio
+            recordAudio();
         }
         else if(requestCode==6&&grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            // record video
+            recordVideo();
         }
         else if(requestCode==7&&grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
             boolean all=true;
@@ -340,7 +376,85 @@ public class MainActivity extends AppCompatActivity {
             quickAlert();
         else if(resultCode==RESULT_OK&&requestCode==7)
             customAlert();
-        else
+        else if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+            // Get the audio file URI from the intent
+            Uri videoUri = data.getData();
+
+            // Generate the content URI using FileProvider
+            Uri contentUri = FileProvider.getUriForFile(MainActivity.this, "com.smd.alertapp.fileprovider", new File(videoUri.getPath()));
+
+            // Upload the video file to Firebase Storage
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference videoRef = storageRef.child("video").child(contentUri.getLastPathSegment());
+
+            UploadTask uploadTask = videoRef.putFile(contentUri);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // Audio file uploaded successfully
+                    // Get the download URL of the uploaded file
+                    videoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri downloadUri) {
+                            // Handle the audio file URL
+                            String videoUrl = downloadUri.toString();
+                            // Pass the audioUrl to the CustomAlert object or save it directly to the Firebase Realtime Database
+                            // ...
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Handle any errors
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // Handle any errors
+                }
+            });
+        }
+        else  if (requestCode == REQUEST_AUDIO_CAPTURE && resultCode == RESULT_OK) {
+            // Get the audio file URI from the intent
+            Uri audioUri = data.getData();
+
+            // Generate the content URI using FileProvider
+            Uri contentUri = FileProvider.getUriForFile(MainActivity.this, "com.smd.alertapp.fileprovider", new File(audioUri.getPath()));
+
+            // Upload the video file to Firebase Storage
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference audioRef = storageRef.child("audio").child(contentUri.getLastPathSegment());
+
+            UploadTask uploadTask = audioRef.putFile(contentUri);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Audio file uploaded successfully
+                        // Get the download URL of the uploaded file
+                        audioRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri downloadUri) {
+                                // Handle the audio file URL
+                                String audioUrl = downloadUri.toString();
+                                // Pass the audioUrl to the CustomAlert object or save it directly to the Firebase Realtime Database
+                                // ...
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Handle any errors
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle any errors
+                    }
+                });
+            }
+        else if(requestCode==6||requestCode==7)
             Toast.makeText(MainActivity.this,"Location not enabled, please enable location first",Toast.LENGTH_LONG).show();
     }
 

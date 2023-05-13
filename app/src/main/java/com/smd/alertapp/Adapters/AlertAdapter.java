@@ -41,7 +41,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
         Alert alert=alerts.get(position);
         holder.alertTypeTxt.setText(alert.getAlertType().toString());
         holder.alertIdTxt.setText(alert.getAlertId());
-        holder.alertUserIdTxt.setText(alert.getUserId());
+        holder.alertUserIdTxt.setText(alert.getUserId()); // PHONE NUMBER
         holder.alertCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -19,6 +19,7 @@
 
         <TextView
             android:id="@+id/alertid"
+            android:text="Alert id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -28,6 +29,7 @@
 
         <TextView
             android:id="@+id/alertuser"
+            android:text="03346119000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/alertid"
@@ -37,6 +39,7 @@
             />
         <TextView
             android:id="@+id/alerttype"
+            android:text="Quick aLERT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
