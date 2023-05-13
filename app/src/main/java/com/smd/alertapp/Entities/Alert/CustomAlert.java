@@ -21,6 +21,8 @@ import java.util.Set;
 public class CustomAlert extends Alert{
 
     private String message;
+    private String videoUrl;
+    private String audioUrl;
     public CustomAlert(String alertId, String userId, HelplineType helplineType, String location, List<String> contactList, String message) {
         super(alertId, AlertType.CUSTOM_ALERT, userId, helplineType, location, contactList);
         this.message=message;
@@ -29,9 +31,29 @@ public class CustomAlert extends Alert{
     public CustomAlert() {
     }
 
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public String getAudioUrl() {
+        return audioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
+    }
+
     @Override
     public void send(Context ctx, boolean alertContacts, boolean alertHelplines, String username, IAlertDAO dao) {
-        message="Custom Alert from "+username+":\n"+message;
+        message="Custom Alert from "+username+":\n"+message+"\n\nLocation:\n"+location;
+        if(videoUrl!=null)
+            message+="\n\nVideo Link:\n"+ videoUrl;
+        if(audioUrl!=null)
+            message+="\n\nAudio Link:\n"+audioUrl;
         ArrayList<String>multipartMessage=new ArrayList<String>();
         if(alertContacts) {
             SmsManager smsManager = SmsManager.getDefault();
@@ -40,7 +62,6 @@ public class CustomAlert extends Alert{
             for (String contact : contactList) {
                 multipartMessage=smsManager.divideMessage(message);
                 smsManager.sendMultipartTextMessage(contact,null,multipartMessage,null,null);
-                smsManager.sendTextMessage(contact, null, "Location:\n"+location, null, null);
                 Toast.makeText(ctx,"Alert SMS sent to "+ contact,Toast.LENGTH_SHORT).show();
             }
             if(!alertHelplines) {

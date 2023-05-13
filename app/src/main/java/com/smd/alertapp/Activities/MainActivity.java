@@ -1,33 +1,33 @@
 package com.smd.alertapp.Activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -42,11 +42,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.smd.alertapp.DataLayer.Alert.AlertFirebaseDAO;
+import com.smd.alertapp.DataLayer.Alert.AudioUploadCallback;
 import com.smd.alertapp.DataLayer.Alert.IAlertDAO;
+import com.smd.alertapp.DataLayer.Alert.VideoUploadCallback;
 import com.smd.alertapp.Entities.Alert.CustomAlert;
 import com.smd.alertapp.Entities.Alert.QuickAlert;
 import com.smd.alertapp.Entities.User.HelplineType;
@@ -57,17 +56,13 @@ import com.smd.alertapp.Utilities.LocationUtil;
 import com.smd.alertapp.Utilities.PermissionUtil;
 import com.smd.alertapp.Utilities.SessionManager;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_AUDIO_CAPTURE = 10;
@@ -82,8 +77,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView micView, videoView, sendBtnView;
     FrameLayout contactFrag;
     IAlertDAO alertDAO;
-    private File audioFile=null;
-    private File videoFile=null;
+    ActivityResultLauncher<Intent> recordMediaResultLauncher, recordAudioResultLauncher;
+    private Uri audioFile=null;
+    private Uri videoFile=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +102,47 @@ public class MainActivity extends AppCompatActivity {
         micView=findViewById(R.id.microphone_icon);
         videoView=findViewById(R.id.video_icon);
         sendBtnView=findViewById(R.id.send_button);
+        recordMediaResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            // Process the recorded video data here
+                            if (data != null) {
+                                Uri videoUri = data.getData();
+                                Log.d("Uri",videoUri.toString());
+                                videoFile=videoUri;
+                                // Upload the video file to Firebase or perform any other operations
+                                //uploadVideoToFirebase(videoUri);
+                            }
+                        } else {
+                            Toast.makeText(MainActivity.this, "No Video Created", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+        recordAudioResultLauncher=registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            // Process the recorded video data here
+                            if (data != null) {
+                                Uri audioUri = data.getData();
+                                Log.d("Uri",audioUri.toString());
+                                audioFile=audioUri;
+                                // Upload the video file to Firebase or perform any other operations
+                                //uploadVideoToFirebase(videoUri);
+                            }
+                        } else {
+                            Toast.makeText(MainActivity.this, "No Audio Created", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+        String alertVideo, alertAudio;
         Log.d("MainActivity","OnCreate called");
         Log.d("Deb",userDetails.toString());
         editContactsCard.setOnClickListener(new View.OnClickListener() {
@@ -220,18 +257,78 @@ public class MainActivity extends AppCompatActivity {
                 alert.send(MainActivity.this,alertAll.isChecked()||alertContacts.isChecked(),alertAll.isChecked()||alertHelplines.isChecked(),userDetails.get("username"), alertDAO);
             }
         });
+
     }
 
     void customAlert(){
         LocationUtil locationUtil=new LocationUtil(MainActivity.this);
         SharedPreferences sharedPreferences = getSharedPreferences("ContactPrefs", Context.MODE_PRIVATE);
         Set<String> mSelectedContacts = sharedPreferences.getStringSet("selectedContacts", new HashSet<String>());
+
         locationUtil.getLocation(new LocationCallback() {
             @Override
             public void onLocationObtained(String location) {
-                List<String> m = new ArrayList<String>(mSelectedContacts);
+
+                List<String> m = new ArrayList<>(mSelectedContacts);
                 CustomAlert alert = new CustomAlert(UUID.randomUUID().toString(), userDetails.get("id"), HelplineType.POLICE, location, m, customAlertMsg.getText().toString());
-                alert.send(MainActivity.this,alertAll.isChecked()||alertContacts.isChecked(),alertAll.isChecked()||alertHelplines.isChecked(),userDetails.get("username"), alertDAO);
+
+                final AtomicBoolean audioUploaded = new AtomicBoolean(false);
+                final AtomicBoolean videoUploaded = new AtomicBoolean(false);
+
+                // Check if audio file exists
+                if (audioFile != null) {
+                    alertDAO.uploadAudioToFirebase(audioFile, new AudioUploadCallback() {
+                        @Override
+                        public void onAudioUpload(String audioUrl) {
+                            if (audioUrl != null) {
+                                Toast.makeText(MainActivity.this, "Uploading Audio", Toast.LENGTH_SHORT).show();
+                                alert.setAudioUrl(audioUrl);
+                                Toast.makeText(MainActivity.this, "Audio Uploaded", Toast.LENGTH_SHORT).show();
+                                audioUploaded.set(true);
+                            } else {
+                                Toast.makeText(MainActivity.this, "Failed to upload audio", Toast.LENGTH_SHORT).show();
+                            }
+
+                            // Check if both audio and video uploads are completed
+                            if (audioUploaded.get() && videoUploaded.get()) {
+                                alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO);
+                            }
+                        }
+                    });
+                } else {
+                    audioUploaded.set(true);
+                }
+
+                // Check if video file exists
+                if (videoFile != null) {
+                    Toast.makeText(MainActivity.this, "Uploading Video", Toast.LENGTH_SHORT).show();
+                    alertDAO.uploadVideoToFirebase(videoFile, new VideoUploadCallback() {
+                        @Override
+                        public void onVideoUpload(String videoUrl) {
+                            if (videoUrl != null) {
+                                alert.setVideoUrl(videoUrl);
+                                Toast.makeText(MainActivity.this, "Video Uploaded", Toast.LENGTH_SHORT).show();
+                                videoUploaded.set(true);
+                            } else {
+                                Toast.makeText(MainActivity.this, "Failed to upload video", Toast.LENGTH_SHORT).show();
+                            }
+
+                            // Check if both audio and video uploads are completed
+                            if (audioUploaded.get() && videoUploaded.get()) {
+                                alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO);
+                            }
+                        }
+                    });
+                } else {
+                    videoUploaded.set(true);
+                }
+
+                // Check if both audio and video files are not provided
+                if (audioFile == null && videoFile == null) {
+                    alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO);
+                }
+                audioFile=null;
+                videoFile=null;
             }
         });
     }
@@ -248,27 +345,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void recordAudio() {
-        // Create a new audio file
-        String audioFileName = "audio_" + System.currentTimeMillis() + ".3gp";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        audioFile = new File(storageDir, audioFileName);
-
-        // Create an intent to record audio
+          // Create an intent to record audio
         Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(audioFile));
-        startActivityForResult(intent, REQUEST_AUDIO_CAPTURE);
+        recordAudioResultLauncher.launch(intent);
     }
 
     private void recordVideo() {
-        // Create a new video file
-        String videoFileName = "video_" + System.currentTimeMillis() + ".mp4";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES);
-        videoFile = new File(storageDir, videoFileName);
+        // Create an intent to record a video
+        Intent recordVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
-        // Create an intent to record video
-        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(videoFile));
-        startActivityForResult(intent, REQUEST_VIDEO_CAPTURE);
+        // Start the activity for result
+        recordMediaResultLauncher.launch(recordVideoIntent);
     }
 
     @Override
@@ -376,84 +463,6 @@ public class MainActivity extends AppCompatActivity {
             quickAlert();
         else if(resultCode==RESULT_OK&&requestCode==7)
             customAlert();
-        else if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
-            // Get the audio file URI from the intent
-            Uri videoUri = data.getData();
-
-            // Generate the content URI using FileProvider
-            Uri contentUri = FileProvider.getUriForFile(MainActivity.this, "com.smd.alertapp.fileprovider", new File(videoUri.getPath()));
-
-            // Upload the video file to Firebase Storage
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-            StorageReference videoRef = storageRef.child("video").child(contentUri.getLastPathSegment());
-
-            UploadTask uploadTask = videoRef.putFile(contentUri);
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Audio file uploaded successfully
-                    // Get the download URL of the uploaded file
-                    videoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri downloadUri) {
-                            // Handle the audio file URL
-                            String videoUrl = downloadUri.toString();
-                            // Pass the audioUrl to the CustomAlert object or save it directly to the Firebase Realtime Database
-                            // ...
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // Handle any errors
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    // Handle any errors
-                }
-            });
-        }
-        else  if (requestCode == REQUEST_AUDIO_CAPTURE && resultCode == RESULT_OK) {
-            // Get the audio file URI from the intent
-            Uri audioUri = data.getData();
-
-            // Generate the content URI using FileProvider
-            Uri contentUri = FileProvider.getUriForFile(MainActivity.this, "com.smd.alertapp.fileprovider", new File(audioUri.getPath()));
-
-            // Upload the video file to Firebase Storage
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-            StorageReference audioRef = storageRef.child("audio").child(contentUri.getLastPathSegment());
-
-            UploadTask uploadTask = audioRef.putFile(contentUri);
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Audio file uploaded successfully
-                        // Get the download URL of the uploaded file
-                        audioRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri downloadUri) {
-                                // Handle the audio file URL
-                                String audioUrl = downloadUri.toString();
-                                // Pass the audioUrl to the CustomAlert object or save it directly to the Firebase Realtime Database
-                                // ...
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Handle any errors
-                            }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Handle any errors
-                    }
-                });
-            }
         else if(requestCode==6||requestCode==7)
             Toast.makeText(MainActivity.this,"Location not enabled, please enable location first",Toast.LENGTH_LONG).show();
     }
