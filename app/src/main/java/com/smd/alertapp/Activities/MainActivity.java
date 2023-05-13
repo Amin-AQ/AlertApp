@@ -44,6 +44,7 @@ import com.smd.alertapp.DataLayer.Alert.IAlertDAO;
 import com.smd.alertapp.Entities.Alert.CustomAlert;
 import com.smd.alertapp.Entities.Alert.QuickAlert;
 import com.smd.alertapp.Entities.User.HelplineType;
+import com.smd.alertapp.Entities.User.HelplineUser;
 import com.smd.alertapp.Fragments.ContactsFragment;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.LocationUtil;
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(MainActivity.this,perms,4);
                 }
                 else
-                    callHelpline();
+                    HelplineUser.callHelpline(MainActivity.this);
             }
         });
 
@@ -232,28 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentTransaction.commit();
     }
-    void callHelpline(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Click on the helpline to call");
-        builder.setCancelable(true);
-        final List<HelplineType> lables = new ArrayList<>(Arrays.asList(HelplineType.values()));
-        List<String> lables2 = new ArrayList<>();
-        for (HelplineType type : lables)
-            lables2.add(type.name()+" : "+type.getValue());
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.dialog_item, lables2);
-        builder.setAdapter(dataAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MainActivity.this,"You have selected " +lables.get(which),Toast.LENGTH_LONG).show();
-                Intent i = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+lables.get(which).getValue()));
-                startActivity(i);
 
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(true);
-        dialog.show();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -278,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
             checkLocationSettings(true);
         }
         else if(requestCode==4&&grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            callHelpline();
+            HelplineUser.callHelpline(MainActivity.this);
         }
         else if(requestCode==5&&grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
             // record audio
