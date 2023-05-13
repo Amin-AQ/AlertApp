@@ -47,4 +47,7 @@
     <string name="alert_type">Alert Type</string>
     <string name="appwidget_text">Emergency Alert App</string>
     <string name="quick_alerts">Quick Alerts</string>
+    <string name="getting_location">Getting Location</string>
+    <string name="uploading_audio">Uploading Audio</string>
+    <string name="uploading_video">Uploading Video</string>
 </resources>

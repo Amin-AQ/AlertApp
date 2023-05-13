@@ -206,4 +206,65 @@
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottomnavmenu"
          />
+
+    <ProgressBar
+        android:id="@+id/locationprogressbar"
+        android:background="@color/white"
+        android:visibility="invisible"
+        style="?android:attr/progressBarStyle"
+        android:tooltipText="Getting stuff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+    <TextView
+        android:visibility="invisible"
+        android:background="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/locationprogressbartext"
+        android:layout_below="@id/locationprogressbar"
+        android:text="@string/getting_location"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"/>
+
+    <ProgressBar
+        android:visibility="invisible"
+        android:id="@+id/videoprogressbar"
+        android:background="@color/white"
+        style="?android:attr/progressBarStyle"
+        android:tooltipText="Getting stuff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+    <TextView
+        android:visibility="invisible"
+        android:background="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/videoprogressbartext"
+        android:layout_below="@id/videoprogressbar"
+        android:text="@string/uploading_video"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"/>
+
+    <ProgressBar
+        android:visibility="gone"
+        android:background="@color/white"
+        android:id="@+id/audioprogressbar"
+        style="?android:attr/progressBarStyle"
+        android:tooltipText="Getting stuff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+    <TextView
+        android:visibility="gone"
+        android:background="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/audioprogressbartext"
+        android:layout_below="@id/audioprogressbar"
+        android:text="@string/uploading_audio"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>

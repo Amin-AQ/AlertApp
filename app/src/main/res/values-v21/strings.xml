@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="getting_location">Getting Location</string>
+    <string name="uploading_audio">Uploading Audio</string>
+    <string name="uploading_video">Uploading Video</string>
+</resources>

@@ -16,7 +16,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -75,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
     CardView quickAlertCard, editContactsCard, callHelplineCard;
     BottomNavigationView bottomNav;
     ImageView micView, videoView, sendBtnView;
+    ProgressBar locationProgressBar, videoProgressBar, audioProgressBar;
+    TextView locationProgressBarText, videoProgressBarText, audioProgressBarText;
     FrameLayout contactFrag;
     IAlertDAO alertDAO;
     ActivityResultLauncher<Intent> recordMediaResultLauncher, recordAudioResultLauncher;
@@ -89,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
             finish();
         userDetails = sessionManager.getUserDetails();
         alertDAO=new AlertFirebaseDAO(MainActivity.this);
+        locationProgressBar = findViewById(R.id.locationprogressbar);
+        videoProgressBar = findViewById(R.id.videoprogressbar);
+        audioProgressBar = findViewById(R.id.audioprogressbar);
+        locationProgressBarText = findViewById(R.id.locationprogressbartext);
+        videoProgressBarText = findViewById(R.id.videoprogressbartext);
+        audioProgressBarText = findViewById(R.id.audioprogressbartext);
         customAlertMsg=findViewById(R.id.custom_alert_text);
         contactFrag=findViewById(R.id.fragment_container);
         alertAll=findViewById(R.id.radio_button_both);
@@ -249,9 +259,13 @@ public class MainActivity extends AppCompatActivity {
         LocationUtil locationUtil=new LocationUtil(MainActivity.this);
         SharedPreferences sharedPreferences = getSharedPreferences("ContactPrefs", Context.MODE_PRIVATE);
         Set<String> mSelectedContacts = sharedPreferences.getStringSet("selectedContacts", new HashSet<String>());
+        locationProgressBar.setVisibility(View.VISIBLE);
+        locationProgressBarText.setVisibility(View.VISIBLE);
         locationUtil.getLocation(new LocationCallback() {
             @Override
             public void onLocationObtained(String location) {
+                locationProgressBar.setVisibility(View.GONE);
+                locationProgressBarText.setVisibility(View.GONE);
                 List<String> m = new ArrayList<String>(mSelectedContacts);
                 QuickAlert alert = new QuickAlert(UUID.randomUUID().toString(), userDetails.get("id"), HelplineType.POLICE, location, m);
                 alert.send(MainActivity.this,alertAll.isChecked()||alertContacts.isChecked(),alertAll.isChecked()||alertHelplines.isChecked(),userDetails.get("username"), alertDAO);
@@ -264,11 +278,13 @@ public class MainActivity extends AppCompatActivity {
         LocationUtil locationUtil=new LocationUtil(MainActivity.this);
         SharedPreferences sharedPreferences = getSharedPreferences("ContactPrefs", Context.MODE_PRIVATE);
         Set<String> mSelectedContacts = sharedPreferences.getStringSet("selectedContacts", new HashSet<String>());
-
+        locationProgressBar.setVisibility(View.VISIBLE);
+        locationProgressBarText.setVisibility(View.VISIBLE);
         locationUtil.getLocation(new LocationCallback() {
             @Override
             public void onLocationObtained(String location) {
-
+                locationProgressBar.setVisibility(View.GONE);
+                locationProgressBarText.setVisibility(View.GONE);
                 List<String> m = new ArrayList<>(mSelectedContacts);
                 CustomAlert alert = new CustomAlert(UUID.randomUUID().toString(), userDetails.get("id"), HelplineType.POLICE, location, m, customAlertMsg.getText().toString());
 
@@ -277,9 +293,13 @@ public class MainActivity extends AppCompatActivity {
 
                 // Check if audio file exists
                 if (audioFile != null) {
+                    audioProgressBar.setVisibility(View.VISIBLE);
+                    audioProgressBarText.setVisibility(View.VISIBLE);
                     alertDAO.uploadAudioToFirebase(audioFile, new AudioUploadCallback() {
                         @Override
                         public void onAudioUpload(String audioUrl) {
+                            audioProgressBar.setVisibility(View.GONE);
+                            audioProgressBarText.setVisibility(View.GONE);
                             if (audioUrl != null) {
                                 Toast.makeText(MainActivity.this, "Uploading Audio", Toast.LENGTH_SHORT).show();
                                 alert.setAudioUrl(audioUrl);
@@ -301,10 +321,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // Check if video file exists
                 if (videoFile != null) {
+                    videoProgressBar.setVisibility(View.VISIBLE);
+                    videoProgressBarText.setVisibility(View.VISIBLE);
                     Toast.makeText(MainActivity.this, "Uploading Video", Toast.LENGTH_SHORT).show();
                     alertDAO.uploadVideoToFirebase(videoFile, new VideoUploadCallback() {
                         @Override
                         public void onVideoUpload(String videoUrl) {
+                            videoProgressBar.setVisibility(View.GONE);
+                            videoProgressBarText.setVisibility(View.GONE);
                             if (videoUrl != null) {
                                 alert.setVideoUrl(videoUrl);
                                 Toast.makeText(MainActivity.this, "Video Uploaded", Toast.LENGTH_SHORT).show();
