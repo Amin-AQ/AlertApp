@@ -20,6 +20,7 @@ import com.smd.alertapp.DataLayer.Alert.QuickAlertsCallback;
 import com.smd.alertapp.Entities.Alert.Alert;
 import com.smd.alertapp.Entities.Alert.CustomAlert;
 import com.smd.alertapp.Entities.Alert.QuickAlert;
+import com.smd.alertapp.Entities.User.HelplineType;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.SessionManager;
 
@@ -69,7 +70,7 @@ public class HelplineMainActivity extends AppCompatActivity {
             }
         });
         alertDAO=new AlertFirebaseDAO(getApplicationContext());
-        alertDAO.getQuickAlerts(new QuickAlertsCallback() {
+        alertDAO.getQuickAlerts(HelplineType.valueOf(userDetails.get("helplinetype")),new QuickAlertsCallback() {
             @Override
             public void onQuickAlertsReceived(ArrayList<Alert> alerts) {
                 quickAlerts=alerts;
@@ -78,7 +79,7 @@ public class HelplineMainActivity extends AppCompatActivity {
                 quickAlertView.setAdapter(quickAlertAdapter);
             }
         });
-        alertDAO.getCustomAlerts(new CustomAlertsCallback() {
+        alertDAO.getCustomAlerts(HelplineType.valueOf(userDetails.get("helplinetype")),new CustomAlertsCallback() {
             @Override
             public void onCustomAlertsReceived(ArrayList<Alert> alerts) {
                 customAlerts=alerts;

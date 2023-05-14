@@ -19,6 +19,7 @@ import com.smd.alertapp.Entities.Alert.Alert;
 import com.smd.alertapp.Entities.Alert.AlertType;
 import com.smd.alertapp.Entities.Alert.QuickAlert;
 import com.smd.alertapp.Entities.Alert.CustomAlert;
+import com.smd.alertapp.Entities.User.HelplineType;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -72,14 +73,15 @@ public class AlertFirebaseDAO implements IAlertDAO{
     }
 
     @Override
-    public void getQuickAlerts(QuickAlertsCallback callback){
+    public void getQuickAlerts(HelplineType helplineType, QuickAlertsCallback callback){
         quickAlertsListener=quickRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<Alert>quickAlerts=new ArrayList<Alert>();
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
                     Alert alert=dataSnapshot.getValue(QuickAlert.class);
-                    quickAlerts.add(alert);
+                    if(alert!=null&&alert.getHelplineType()==helplineType)
+                        quickAlerts.add(alert);
                 }
                 callback.onQuickAlertsReceived(quickAlerts);
             }
@@ -93,14 +95,15 @@ public class AlertFirebaseDAO implements IAlertDAO{
     }
 
     @Override
-    public void getCustomAlerts(CustomAlertsCallback callback){
+    public void getCustomAlerts(HelplineType helplineType,CustomAlertsCallback callback){
         customAlertsListener=customRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<Alert>customAlerts=new ArrayList<Alert>();
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
                     Alert alert=dataSnapshot.getValue(CustomAlert.class);
-                    customAlerts.add(alert);
+                    if(alert!=null&&alert.getHelplineType()==helplineType)
+                        customAlerts.add(alert);
                 }
                 callback.onCustomAlertsReceived(customAlerts);
             }

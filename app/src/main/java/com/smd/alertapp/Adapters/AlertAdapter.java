@@ -42,6 +42,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
         holder.alertTypeTxt.setText(alert.getAlertType().toString());
         holder.alertIdTxt.setText(alert.getAlertId());
         holder.alertUserIdTxt.setText(alert.getUserId()); // PHONE NUMBER
+        holder.helplineTypeTxt.setText(alert.getHelplineType().toString());
         holder.alertCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,13 +73,14 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
     public static class AlertViewHolder extends RecyclerView.ViewHolder{
 
         CardView alertCard;
-        TextView alertIdTxt, alertUserIdTxt, alertTypeTxt;
+        TextView alertIdTxt, alertUserIdTxt, alertTypeTxt, helplineTypeTxt;
         public AlertViewHolder(@NonNull View itemView) {
             super(itemView);
             alertCard=itemView.findViewById(R.id.alertcard);
             alertIdTxt=itemView.findViewById(R.id.alertid);
             alertUserIdTxt=itemView.findViewById(R.id.alertuser);
             alertTypeTxt=itemView.findViewById(R.id.alerttype);
+            helplineTypeTxt=itemView.findViewById(R.id.helplinetype);
         }
     }
 
