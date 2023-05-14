@@ -18,8 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.smd.alertapp.Activities.MainActivity;
 import com.smd.alertapp.Entities.Alert.Alert;
@@ -37,21 +39,26 @@ public class AlertFragment extends Fragment {
     private static final String ARG_USER_ID = "userid";
     private static final String ARG_LOCATION_URI = "location";
     private static final String ARG_ALERT_TYPE = "alerttype";
-    TextView alertType,userId;
+    private static final String ARG_VIDEO_URL = "video";
+    private static final String ARG_AUDIO_URL = "audio";
+    TextView alertType,userId, videoTxt, audioTxt;
+    ImageButton videoView,audioView;
     ImageButton backBtn, locationBtn;
-    String UserId,AlertId,LocationURI,Alert_Type;
+    String UserId,AlertId,LocationURI,Alert_Type, videoUrl,audioUrl;
 
     public AlertFragment() {
         // Required empty public constructor
     }
 
-    public static AlertFragment newInstance(String alertid, String userid, String loc, String alerttype) {
+    public static AlertFragment newInstance(String alertid, String userid, String loc, String alerttype, String aud, String vid) {
         AlertFragment fragment = new AlertFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ALERT_ID,alertid);
         args.putString(ARG_USER_ID,userid);
         args.putString(ARG_LOCATION_URI,loc);
         args.putString(ARG_ALERT_TYPE,alerttype);
+        args.putString(ARG_AUDIO_URL,aud);
+        args.putString(ARG_VIDEO_URL,vid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,6 +78,8 @@ public class AlertFragment extends Fragment {
             AlertId=getArguments().getString(ARG_ALERT_ID);
             LocationURI=getArguments().getString(ARG_LOCATION_URI);
             Alert_Type=getArguments().getString(ARG_ALERT_TYPE);
+            audioUrl=getArguments().getString(ARG_AUDIO_URL);
+            videoUrl=getArguments().getString(ARG_VIDEO_URL);
         }
         alertType=v.findViewById(R.id.alerttype);
         userId=v.findViewById(R.id.userid);
@@ -78,6 +87,16 @@ public class AlertFragment extends Fragment {
         backBtn=v.findViewById(R.id.back_button);
         alertType.setText(Alert_Type);
         userId.setText(UserId);
+        videoView=v.findViewById(R.id.videoview);
+        videoTxt=v.findViewById(R.id.videotxt);
+        audioView=v.findViewById(R.id.audioview);
+        audioTxt=v.findViewById(R.id.audiotxt);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Consume the click event, do nothing
+            }
+        });
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +123,44 @@ public class AlertFragment extends Fragment {
                     callUser();
             }
         });
+        if(videoUrl!=null){
+            videoView.setVisibility(View.VISIBLE);
+            videoTxt.setVisibility(View.VISIBLE);
+            videoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(videoUrl));
+                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            });
+        }
+        if(audioUrl!=null){
+            audioView.setVisibility(View.VISIBLE);
+            audioTxt.setVisibility(View.VISIBLE);
+            audioView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(audioUrl));
+                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            });
+        }
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(audioUrl!=null) {
+            audioView.setVisibility(View.VISIBLE);
+            audioTxt.setVisibility(View.VISIBLE);
+        }
+        if(videoUrl!=null) {
+            videoView.setVisibility(View.VISIBLE);
+            videoTxt.setVisibility(View.VISIBLE);
+        }
     }
 
     void callUser(){

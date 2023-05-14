@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.smd.alertapp.Entities.Alert.Alert;
+import com.smd.alertapp.Entities.Alert.AlertType;
+import com.smd.alertapp.Entities.Alert.CustomAlert;
 import com.smd.alertapp.Fragments.AlertFragment;
 import com.smd.alertapp.Fragments.CommentsFragment;
 import com.smd.alertapp.R;
@@ -47,7 +49,12 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                AlertFragment fragment=AlertFragment.newInstance(alert.getAlertId(),alert.getUserId(),alert.getLocation(),alert.getAlertType().toString());
+                String audioUrl=null, videoUrl=null;
+                if(alert.getAlertType()== AlertType.CUSTOM_ALERT){
+                    audioUrl=((CustomAlert)alert).getAudioUrl();
+                    videoUrl=((CustomAlert)alert).getVideoUrl();
+                }
+                AlertFragment fragment=AlertFragment.newInstance(alert.getAlertId(),alert.getUserId(),alert.getLocation(),alert.getAlertType().toString(),audioUrl,videoUrl);
                 fragmentTransaction.replace(R.id.fragment_alert_container, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
