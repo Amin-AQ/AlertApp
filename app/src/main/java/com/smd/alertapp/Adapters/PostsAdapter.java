@@ -1,9 +1,12 @@
 package com.smd.alertapp.Adapters;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.smd.alertapp.Entities.Post;
 import com.smd.alertapp.Fragments.CommentsFragment;
 import com.smd.alertapp.Fragments.ContactsFragment;
@@ -60,18 +65,33 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView postText, postUser;
+        TextView postText, postUser, postDate;
         CardView commentCard;
+        ImageView postImage;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             postText = itemView.findViewById(R.id.postText);
             postUser = itemView.findViewById(R.id.postUser);
+            postDate = itemView.findViewById(R.id.postDate);
+            postImage = itemView.findViewById(R.id.post_image);
             commentCard = itemView.findViewById(R.id.viewCommentsCard);
         }
         public void bind(Post post) {
             postText.setText(post.getText());
             postUser.setText(post.getUserId());
+            postDate.setText(post.getDate().toString().split(" GMT")[0]);
+            String imageUrl = post.getMediaUrl();
+            if (imageUrl != null) {
+               FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+                .getBytes(Long.MAX_VALUE)
+                .addOnSuccessListener(bytes -> {
+                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    postImage.setMaxHeight(250);
+                    postImage.setImageBitmap(bmp);
+                });
+
+            }
         }
     }
 }

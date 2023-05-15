@@ -117,6 +117,7 @@ public class PostActivity extends AppCompatActivity {
                     Log.e("Saving post uri: ", fileUri.toString());
                     dao.save(newPost, fileUri);
                     postText.setText("");
+                    postImage.setImageURI(null);
                     dao.getPosts(new PostsCallback() {
                         @Override
                         public void onPostsReceived(ArrayList<Post> postsList) {

@@ -5,29 +5,53 @@
     android:layout_margin="4dp"
     android:background="@drawable/outline"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
-        android:id="@+id/postUser"
+    <RelativeLayout
+        android:id="@+id/post_heading"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Faizan Subhani"
-        android:padding="10dp"
-        android:textSize="16dp"
-        />
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/postUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Faizan Subhani"
+            android:padding="10dp"
+            android:textSize="16dp"
+            />
+        <TextView
+            android:id="@+id/postDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/postUser"
+            android:layout_alignParentRight="true"
+            android:textAlignment="textEnd"
+            android:hint="12-1-2023"
+            android:padding="10dp"
+            android:textSize="16dp"
+            />
+    </RelativeLayout>
     <TextView
         android:id="@+id/postText"
+        android:layout_below="@id/post_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/postUser"
         android:padding="10dp"
         android:textSize="16dp"
         android:hint="This is a good post, This is a good post, This is a good post, This is a good post."
+        />
+    <ImageView
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:id="@+id/post_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/postText"
         />
     <androidx.cardview.widget.CardView
         android:id="@+id/viewCommentsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:layout_below="@id/postText"
+        android:layout_below="@id/post_image"
         android:layout_marginHorizontal="10dp"
         android:layout_marginBottom="6dp"
         app:cardCornerRadius="12dp"

@@ -77,7 +77,7 @@ public class CommentsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (newCommentText.getText().toString().length() == 0) {
-                    Toast.makeText(getContext(), "Post text is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Comment text is empty", Toast.LENGTH_SHORT).show();
                 } else {
                     String text = newCommentText.getText().toString();
                     Comment newComment = new Comment(postId, userDetails.get("username"), text);
