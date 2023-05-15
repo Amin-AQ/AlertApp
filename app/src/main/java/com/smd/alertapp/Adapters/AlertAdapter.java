@@ -49,12 +49,14 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                String audioUrl=null, videoUrl=null;
+                String audioUrl=null, videoUrl=null, alertMsg=null;
                 if(alert.getAlertType()== AlertType.CUSTOM_ALERT){
                     audioUrl=((CustomAlert)alert).getAudioUrl();
                     videoUrl=((CustomAlert)alert).getVideoUrl();
+                    alertMsg=((CustomAlert)alert).getMessage();
+
                 }
-                AlertFragment fragment=AlertFragment.newInstance(alert.getAlertId(),alert.getUserId(),alert.getLocation(),alert.getAlertType().toString(),audioUrl,videoUrl);
+                AlertFragment fragment=AlertFragment.newInstance(alert.getAlertId(),alert.getUserId(),alert.getLocation(),alert.getAlertType().toString(),alertMsg,audioUrl,videoUrl);
                 fragmentTransaction.replace(R.id.fragment_alert_container, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();

@@ -47,8 +47,10 @@ public class CustomAlert extends Alert{
         this.audioUrl = audioUrl;
     }
 
+
     @Override
     public void send(Context ctx, boolean alertContacts, boolean alertHelplines, String username, IAlertDAO dao) {
+        String originalMsg=message;
         message="Custom Alert from "+username+":\n"+message+"\n\nLocation:\n"+location;
         if(videoUrl!=null)
             message+="\n\nVideo Link:\n"+ videoUrl;
@@ -66,10 +68,12 @@ public class CustomAlert extends Alert{
             }
             if(!alertHelplines) {
                 helplineType = null;
+                message=originalMsg;
                 dao.save(CustomAlert.this);
             }
         }
         if(alertHelplines){
+            message=originalMsg;
             showDialog(ctx,dao);
             if(!alertContacts)
                 contactList=null;

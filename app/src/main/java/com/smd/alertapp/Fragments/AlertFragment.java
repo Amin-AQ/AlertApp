@@ -41,16 +41,17 @@ public class AlertFragment extends Fragment {
     private static final String ARG_ALERT_TYPE = "alerttype";
     private static final String ARG_VIDEO_URL = "video";
     private static final String ARG_AUDIO_URL = "audio";
-    TextView alertType,userId, videoTxt, audioTxt;
+    private static final String ARG_ALERT_MSG = "msg";
+    TextView alertType,userId, videoTxt, audioTxt, alertMsgTxt;
     ImageButton videoView,audioView;
     ImageButton backBtn, locationBtn;
-    String UserId,AlertId,LocationURI,Alert_Type, videoUrl,audioUrl;
+    String UserId,AlertId,LocationURI,Alert_Type, videoUrl,audioUrl, alertMsg;
 
     public AlertFragment() {
         // Required empty public constructor
     }
 
-    public static AlertFragment newInstance(String alertid, String userid, String loc, String alerttype, String aud, String vid) {
+    public static AlertFragment newInstance(String alertid, String userid, String loc, String alerttype, String alertmsg, String aud, String vid) {
         AlertFragment fragment = new AlertFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ALERT_ID,alertid);
@@ -59,6 +60,7 @@ public class AlertFragment extends Fragment {
         args.putString(ARG_ALERT_TYPE,alerttype);
         args.putString(ARG_AUDIO_URL,aud);
         args.putString(ARG_VIDEO_URL,vid);
+        args.putString(ARG_ALERT_MSG,alertmsg);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,8 +82,10 @@ public class AlertFragment extends Fragment {
             Alert_Type=getArguments().getString(ARG_ALERT_TYPE);
             audioUrl=getArguments().getString(ARG_AUDIO_URL);
             videoUrl=getArguments().getString(ARG_VIDEO_URL);
+            alertMsg=getArguments().getString(ARG_ALERT_MSG);
         }
         alertType=v.findViewById(R.id.alerttype);
+        alertMsgTxt=v.findViewById(R.id.alertmsg);
         userId=v.findViewById(R.id.userid);
         locationBtn=v.findViewById(R.id.locationbtn);
         backBtn=v.findViewById(R.id.back_button);
@@ -91,6 +95,8 @@ public class AlertFragment extends Fragment {
         videoTxt=v.findViewById(R.id.videotxt);
         audioView=v.findViewById(R.id.audioview);
         audioTxt=v.findViewById(R.id.audiotxt);
+        if(alertMsg!=null)
+            alertMsgTxt.setText(alertMsg);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

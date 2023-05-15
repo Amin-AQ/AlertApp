@@ -98,5 +98,14 @@
         android:layout_marginBottom="20dp"
         android:text="@string/audio"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/alertmsg"
+        android:textSize="13sp"
+        android:textAllCaps="false"
+        android:layout_margin="25dp"
+        android:layout_below="@+id/audiotxt"/>
+
 
 </RelativeLayout>
