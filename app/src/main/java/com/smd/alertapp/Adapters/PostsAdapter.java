@@ -64,6 +64,18 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         return postList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView postText, postUser, postDate;
         CardView commentCard;
@@ -86,8 +98,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
                 .getBytes(Long.MAX_VALUE)
                 .addOnSuccessListener(bytes -> {
+                    postImage.setVisibility(View.VISIBLE);
                     Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    postImage.setMaxHeight(250);
+                   // postImage.setMaxHeight(250);
                     postImage.setImageBitmap(bmp);
                 });
 

@@ -1,34 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="4dp"
-    android:background="@drawable/outline"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@drawable/outline">
+
     <RelativeLayout
         android:id="@+id/post_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/postUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Faizan Subhani"
             android:padding="10dp"
             android:textSize="16dp"
-            />
+            android:text="Faizan Subhani" />
+
         <TextView
             android:id="@+id/postDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/postUser"
+            android:layout_toRightOf="@id/postUser"
             android:layout_alignParentRight="true"
             android:textAlignment="textEnd"
-            android:hint="12-1-2023"
             android:padding="10dp"
             android:textSize="16dp"
-            />
+            android:text="12-1-2023" />
     </RelativeLayout>
+
     <TextView
         android:id="@+id/postText"
         android:layout_below="@id/post_heading"
@@ -36,16 +37,17 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textSize="16dp"
-        android:hint="This is a good post, This is a good post, This is a good post, This is a good post."
-        />
+        android:text="This is a good post, This is a good post, This is a good post, This is a good post." />
+
     <ImageView
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
         android:id="@+id/post_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@id/postText"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon"
+        android:visibility="gone"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/viewCommentsCard"
         android:layout_width="match_parent"
@@ -59,18 +61,18 @@
 
         <ImageView
             android:id="@+id/CommentIcon"
-            android:paddingStart="32dp"
-            android:padding="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:src="@drawable/comment_button"/>
+            android:layout_marginStart="32dp"
+            android:padding="8dp"
+            android:src="@drawable/comment_button" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:layout_gravity="center"
+            android:padding="8dp"
             android:text="@string/post_comments"
             android:textSize="18sp" />
 
