@@ -1,80 +1,87 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="12dp"
     android:layout_margin="4dp"
-    android:background="@drawable/outline">
-
+    app:cardElevation="30dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <RelativeLayout
-        android:id="@+id/post_heading"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
+        <RelativeLayout
+            android:id="@+id/post_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/postUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="16dp"
+                android:text="Faizan Subhani" />
+
+            <TextView
+                android:id="@+id/postDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/postUser"
+                android:layout_alignParentRight="true"
+                android:textAlignment="textEnd"
+                android:padding="10dp"
+                android:textSize="16dp"
+                android:text="12-1-2023" />
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/postUser"
-            android:layout_width="wrap_content"
+            android:id="@+id/postText"
+            android:layout_below="@id/post_heading"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textSize="16dp"
-            android:text="Faizan Subhani" />
-
-        <TextView
-            android:id="@+id/postDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/postUser"
-            android:layout_alignParentRight="true"
-            android:textAlignment="textEnd"
-            android:padding="10dp"
-            android:textSize="16dp"
-            android:text="12-1-2023" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/postText"
-        android:layout_below="@id/post_heading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="16dp"
-        android:text="This is a good post, This is a good post, This is a good post, This is a good post." />
-
-    <ImageView
-        android:id="@+id/post_image"
-        android:layout_below="@id/postText"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/icon"
-        android:visibility="gone"/>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/viewCommentsCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:layout_below="@id/post_image"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="6dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp">
+            android:text="This is a good post, This is a good post, This is a good post, This is a good post." />
 
         <ImageView
-            android:id="@+id/CommentIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="32dp"
-            android:padding="8dp"
-            android:src="@drawable/comment_button" />
+            android:id="@+id/post_image"
+            android:layout_below="@id/postText"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon"
+            android:visibility="gone"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/viewCommentsCard"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="8dp"
-            android:text="@string/post_comments"
-            android:textSize="18sp" />
+            android:clickable="true"
+            android:layout_below="@id/post_image"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp">
 
-    </androidx.cardview.widget.CardView>
-</RelativeLayout>
+            <ImageView
+                android:id="@+id/CommentIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="32dp"
+                android:padding="8dp"
+                android:src="@drawable/comment_button" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                android:text="@string/post_comments"
+                android:textSize="18sp" />
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
+

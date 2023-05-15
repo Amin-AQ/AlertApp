@@ -103,7 +103,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                    // postImage.setMaxHeight(250);
                     postImage.setImageBitmap(bmp);
                 });
-
             }
         }
     }

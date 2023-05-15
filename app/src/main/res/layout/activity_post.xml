@@ -70,6 +70,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/added_posts"
         android:layout_margin="6dp"
+        android:background="@android:color/transparent"
         android:layout_below="@id/create_post_layout"
         android:layout_above="@id/bottom_navigation"
         android:layout_width="match_parent"
