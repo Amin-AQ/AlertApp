@@ -50,4 +50,8 @@
     <string name="getting_location">Getting Location</string>
     <string name="uploading_audio">Uploading Audio</string>
     <string name="uploading_video">Uploading Video</string>
+    <string name="helplinetype">helplinetype</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="view_location">View Location</string>
 </resources>

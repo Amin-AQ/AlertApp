@@ -49,11 +49,54 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/loctxt"
         android:layout_below="@id/locationbtn"
         android:layout_centerHorizontal="true"
         android:textSize="11sp"
-        android:text="View Location"/>
+        android:layout_marginBottom="20dp"
+        android:text="@string/view_location"/>
 
+    <ImageButton
+        android:id="@+id/videoview"
+        android:src="@drawable/video"
+        android:background="@drawable/outline"
+        android:layout_centerHorizontal="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/loctxt"
+        android:visibility="invisible"
+        android:layout_marginHorizontal="30dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/videotxt"
+        android:layout_below="@id/videoview"
+        android:layout_centerHorizontal="true"
+        android:textSize="11sp"
+        android:visibility="invisible"
+        android:layout_marginBottom="20dp"
+        android:text="@string/video"/>
+
+    <ImageButton
+        android:id="@+id/audioview"
+        android:src="@drawable/audio"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/outline"
+        android:layout_below="@id/videotxt"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/audiotxt"
+        android:layout_below="@id/audioview"
+        android:layout_centerHorizontal="true"
+        android:textSize="11sp"
+        android:visibility="invisible"
+        android:layout_marginBottom="20dp"
+        android:text="@string/audio"/>
 
 
 </RelativeLayout>
