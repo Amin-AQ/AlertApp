@@ -33,20 +33,36 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.smd.alertapp.DataLayer.Alert.AlertFirebaseDAO;
+import com.smd.alertapp.DataLayer.Alert.AlertSentCallback;
 import com.smd.alertapp.DataLayer.Alert.AudioUploadCallback;
 import com.smd.alertapp.DataLayer.Alert.IAlertDAO;
+import com.smd.alertapp.DataLayer.Alert.LocationLinksCallback;
 import com.smd.alertapp.DataLayer.Alert.VideoUploadCallback;
 import com.smd.alertapp.Entities.Alert.CustomAlert;
 import com.smd.alertapp.Entities.Alert.QuickAlert;
@@ -70,11 +86,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_AUDIO_CAPTURE = 10;
     private static final int REQUEST_VIDEO_CAPTURE = 11;
     public static boolean taskFlag=false;
+    private InterstitialAd mInterstitialAd;
     EditText customAlertMsg;
     SessionManager sessionManager;
     HashMap<String, String> userDetails;
     RadioButton alertAll,alertContacts,alertHelplines;
-    CardView quickAlertCard, editContactsCard, callHelplineCard;
+    CardView quickAlertCard, editContactsCard, callHelplineCard, checkPlacesCard;
     BottomNavigationView bottomNav;
     ImageView micView, videoView, sendBtnView;
     ProgressBar locationProgressBar, videoProgressBar, audioProgressBar;
@@ -106,12 +123,37 @@ public class MainActivity extends AppCompatActivity {
         alertHelplines=findViewById(R.id.radio_button_alert_helplines);
         quickAlertCard=findViewById(R.id.quickAlertCard);
         editContactsCard=findViewById(R.id.editContactsCard);
+        checkPlacesCard=findViewById(R.id.check_places_card);
         callHelplineCard=findViewById(R.id.contact_helpline_card);
         bottomNav=findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.menu_home);
         micView=findViewById(R.id.microphone_icon);
         videoView=findViewById(R.id.video_icon);
         sendBtnView=findViewById(R.id.send_button);
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("Debug", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d("Debug", loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+
         recordMediaResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -164,7 +206,12 @@ public class MainActivity extends AppCompatActivity {
                     PermissionUtil.requestReadContactsPermission(MainActivity.this);
             }
         });
-
+        checkPlacesCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPlaces();
+            }
+        });
         quickAlertCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,7 +301,10 @@ public class MainActivity extends AppCompatActivity {
                 }
         });
     }
-
+    void checkPlaces(){
+        startActivity(new Intent(getApplicationContext(), MapActivity.class));
+        overridePendingTransition(0, 0);
+    }
     void quickAlert(){
         LocationUtil locationUtil=new LocationUtil(MainActivity.this);
         SharedPreferences sharedPreferences = getSharedPreferences("ContactPrefs", Context.MODE_PRIVATE);
@@ -268,7 +318,12 @@ public class MainActivity extends AppCompatActivity {
                 locationProgressBarText.setVisibility(View.GONE);
                 List<String> m = new ArrayList<String>(mSelectedContacts);
                 QuickAlert alert = new QuickAlert(UUID.randomUUID().toString(), userDetails.get("id"), HelplineType.POLICE, location, m);
-                alert.send(MainActivity.this,alertAll.isChecked()||alertContacts.isChecked(),alertAll.isChecked()||alertHelplines.isChecked(),userDetails.get("username"), alertDAO);
+                alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO, new AlertSentCallback() {
+                    @Override
+                    public void onAlertSent() {
+                        showAd();
+                    }
+                });
             }
         });
 
@@ -311,7 +366,12 @@ public class MainActivity extends AppCompatActivity {
 
                             // Check if both audio and video uploads are completed
                             if (audioUploaded.get() && videoUploaded.get()) {
-                                alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO);
+                                alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO, new AlertSentCallback() {
+                                    @Override
+                                    public void onAlertSent() {
+                                        showAd();
+                                    }
+                                });
                             }
                         }
                     });
@@ -339,7 +399,12 @@ public class MainActivity extends AppCompatActivity {
 
                             // Check if both audio and video uploads are completed
                             if (audioUploaded.get() && videoUploaded.get()) {
-                                alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO);
+                                alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO, new AlertSentCallback() {
+                                    @Override
+                                    public void onAlertSent() {
+                                        showAd();
+                                    }
+                                });
                             }
                         }
                     });
@@ -349,13 +414,82 @@ public class MainActivity extends AppCompatActivity {
 
                 // Check if both audio and video files are not provided
                 if (audioFile == null && videoFile == null) {
-                    alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO);
+                    alert.send(MainActivity.this, alertAll.isChecked() || alertContacts.isChecked(), alertAll.isChecked() || alertHelplines.isChecked(), userDetails.get("username"), alertDAO, new AlertSentCallback() {
+                        @Override
+                        public void onAlertSent() {
+                            showAd();
+                        }
+                    });
                 }
                 audioFile=null;
                 videoFile=null;
             }
         });
     }
+    void showAd(){
+        if (mInterstitialAd != null) {
+            setFullScreenCallback();
+            mInterstitialAd.show(MainActivity.this);
+        } else {
+            Log.d("TAG", "The interstitial ad wasn't ready yet.");
+        }
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("Debug", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d("Debug", loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+    void setFullScreenCallback(){
+        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+            @Override
+            public void onAdClicked() {
+                // Called when a click is recorded for an ad.
+                Log.d("Deubg", "Ad was clicked.");
+            }
+
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                // Called when ad is dismissed.
+                // Set the ad reference to null so you don't show the ad a second time.
+                Log.d("Deubg", "Ad dismissed fullscreen content.");
+                mInterstitialAd = null;
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                // Called when ad fails to show.
+                Log.e("Deubg", "Ad failed to show fullscreen content.");
+                mInterstitialAd = null;
+            }
+
+            @Override
+            public void onAdImpression() {
+                // Called when an impression is recorded for an ad.
+                Log.d("Deubg", "Ad recorded an impression.");
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                // Called when ad is shown.
+                Log.d("Deubg", "Ad showed fullscreen content.");
+            }
+
+        });
+    }
+
     void launchEditContactsFragment(){
         //Log.d("Contacts",contactList.toString());
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -501,6 +635,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+
+
 
     public interface LocationCallback {
         void onLocationObtained(String location);

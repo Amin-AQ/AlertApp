@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.smd.alertapp.DataLayer.Alert.AlertSentCallback;
 import com.smd.alertapp.DataLayer.Alert.IAlertDAO;
 import com.smd.alertapp.Entities.User.HelplineType;
 import com.smd.alertapp.R;
@@ -16,7 +17,6 @@ import com.smd.alertapp.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class QuickAlert extends Alert {
     public QuickAlert(String alertId, String userId, HelplineType helplineType, String location, List<String> contactList) {
@@ -27,7 +27,7 @@ public class QuickAlert extends Alert {
     }
 
     @Override
-    public void send(Context ctx, boolean alertContacts, boolean alertHelplines, String username, IAlertDAO dao) {
+    public void send(Context ctx, boolean alertContacts, boolean alertHelplines, String username, IAlertDAO dao, AlertSentCallback callback) {
         String message = "This message is from EmergencyAlert app.\n"+username+" is in danger and needs your help!\nLocation:\n"+location;
         if(alertContacts) {
             SmsManager smsManager = SmsManager.getDefault();
@@ -37,22 +37,24 @@ public class QuickAlert extends Alert {
                     smsManager.sendTextMessage(contact, null, message, null, null);
                     Toast.makeText(ctx,"Alert SMS sent to "+ contact,Toast.LENGTH_SHORT).show();
             }
-            if(!alertHelplines)
-                helplineType=null;
+            if(!alertHelplines) {
+                helplineType = null;
+                dao.save(QuickAlert.this,callback);
+            }
         }
         if(alertHelplines){
-            showDialog(ctx,dao);
+            showDialog(ctx,dao,callback);
             if(!alertContacts)
                 contactList=null;
         }
 
     }
 
-    private void alertHelpline(IAlertDAO dao){
+    private void alertHelpline(IAlertDAO dao, AlertSentCallback callback){
         Log.d("Alert","alert helpline function called");
-        dao.save(QuickAlert.this);
+        dao.save(QuickAlert.this,callback);
     }
-    private void showDialog(Context ctx, IAlertDAO dao)
+    private void showDialog(Context ctx, IAlertDAO dao, AlertSentCallback callback)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setTitle("Click on the helpline to alert");
@@ -66,7 +68,7 @@ public class QuickAlert extends Alert {
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(ctx,"You have selected " +lables.get(which),Toast.LENGTH_LONG).show();
                 helplineType=lables.get(which);
-                alertHelpline(dao);
+                alertHelpline(dao,callback);
             }
         });
         AlertDialog dialog = builder.create();

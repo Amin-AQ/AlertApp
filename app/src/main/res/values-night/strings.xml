@@ -54,4 +54,6 @@
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="view_location">View Location</string>
+    <string name="check_places">Check Places</string>
+    <string name="call_helpline">Call Helpline</string>
 </resources>

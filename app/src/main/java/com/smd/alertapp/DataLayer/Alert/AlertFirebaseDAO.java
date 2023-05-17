@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +24,7 @@ import com.smd.alertapp.Entities.User.HelplineType;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AlertFirebaseDAO implements IAlertDAO{
 
@@ -40,7 +42,7 @@ public class AlertFirebaseDAO implements IAlertDAO{
     }
 
     @Override
-    public void save(Alert alert) {
+    public void save(Alert alert, AlertSentCallback callback) {
         DatabaseReference alertRef;
         String key= alert.getAlertId();
 
@@ -61,6 +63,7 @@ public class AlertFirebaseDAO implements IAlertDAO{
                         alertRef.child("message").setValue(((CustomAlert) alert).getMessage());
                     }*/
                     Toast.makeText(context, "Alert sent to "+alert.getHelplineType(), Toast.LENGTH_SHORT).show();
+                    callback.onAlertSent();
                 }
             }
 
@@ -68,6 +71,8 @@ public class AlertFirebaseDAO implements IAlertDAO{
             public void onCancelled(@NonNull DatabaseError error) {
                 // Handle error
                 Log.d("UserFirebaseOnCancelSave",error.toString());
+                Toast.makeText(context, "Alert was cancelled unexpectedly", Toast.LENGTH_LONG).show();
+                callback.onAlertSent();
             }
         });
     }
@@ -170,6 +175,48 @@ public class AlertFirebaseDAO implements IAlertDAO{
             // Handle any errors during the video upload
             callback.onAudioUpload(null);
         });
+    }
+    @Override
+    public void fetchLocationLinks(final LocationLinksCallback callback) {
+        final ArrayList<LatLng> locationLinks = new ArrayList<>();
+
+        DatabaseReference quickAlertRef = FirebaseDatabase.getInstance().getReference("QuickAlert");
+        DatabaseReference customAlertRef = FirebaseDatabase.getInstance().getReference("CustomAlert");
+
+        // Counter to track the completion of both quick and custom alerts
+        final AtomicInteger counter = new AtomicInteger(2);
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot alertSnapshot : dataSnapshot.getChildren()) {
+                    String locationLink = alertSnapshot.child("location").getValue(String.class);
+                    LatLng latLng = extractLatLngFromLocationLink(locationLink);
+                    locationLinks.add(latLng);
+                }
+
+                // Check if both quick and custom alerts have been fetched
+                if (counter.decrementAndGet() == 0) {
+                    callback.onLocationLinksFetched(locationLinks);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle database error
+            }
+        };
+
+        quickAlertRef.addListenerForSingleValueEvent(listener);
+        customAlertRef.addListenerForSingleValueEvent(listener);
+    }
+
+    private LatLng extractLatLngFromLocationLink(String locationLink) {
+        String[] parts = locationLink.split(":|,");
+    // Parse latitude and longitude as doubles
+        double latitude = Double.parseDouble(parts[2]);
+        double longitude = Double.parseDouble(parts[3]);
+        return new LatLng(latitude, longitude);
     }
 
 

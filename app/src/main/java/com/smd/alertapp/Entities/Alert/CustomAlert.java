@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.smd.alertapp.DataLayer.Alert.AlertSentCallback;
 import com.smd.alertapp.DataLayer.Alert.IAlertDAO;
 import com.smd.alertapp.Entities.User.HelplineType;
 import com.smd.alertapp.R;
@@ -16,7 +17,6 @@ import com.smd.alertapp.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class CustomAlert extends Alert{
 
@@ -49,7 +49,7 @@ public class CustomAlert extends Alert{
 
 
     @Override
-    public void send(Context ctx, boolean alertContacts, boolean alertHelplines, String username, IAlertDAO dao) {
+    public void send(Context ctx, boolean alertContacts, boolean alertHelplines, String username, IAlertDAO dao, AlertSentCallback callback) {
         String originalMsg=message;
         message="Custom Alert from "+username+":\n"+message+"\n\nLocation:\n"+location;
         if(videoUrl!=null)
@@ -69,22 +69,22 @@ public class CustomAlert extends Alert{
             if(!alertHelplines) {
                 helplineType = null;
                 message=originalMsg;
-                dao.save(CustomAlert.this);
+                dao.save(CustomAlert.this, callback);
             }
         }
         if(alertHelplines){
             message=originalMsg;
-            showDialog(ctx,dao);
+            showDialog(ctx,dao,callback);
             if(!alertContacts)
                 contactList=null;
         }
     }
 
-    private void alertHelpline(IAlertDAO dao){
+    private void alertHelpline(IAlertDAO dao, AlertSentCallback callback){
         Log.d("Alert","alert helpline function called");
-        dao.save(CustomAlert.this);
+        dao.save(CustomAlert.this,callback);
     }
-    private void showDialog(Context ctx, IAlertDAO dao)
+    private void showDialog(Context ctx, IAlertDAO dao, AlertSentCallback callback)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setTitle("Click on the helpline to alert");
@@ -98,7 +98,7 @@ public class CustomAlert extends Alert{
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(ctx,"You have selected " +lables.get(which),Toast.LENGTH_LONG).show();
                 helplineType=lables.get(which);
-                alertHelpline(dao);
+                alertHelpline(dao,callback);
             }
         });
         AlertDialog dialog = builder.create();

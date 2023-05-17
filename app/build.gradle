@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
 }
 
 android {
@@ -36,7 +38,7 @@ android {
 }
 
 dependencies {
-
+    implementation 'com.google.android.gms:play-services-ads:22.0.0'
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-analytics'
@@ -52,6 +54,7 @@ dependencies {
     implementation 'com.android.car.ui:car-ui-lib:2.4.0'
     implementation 'com.google.android.material:material:1.8.0'
     implementation "com.twilio.sdk:twilio:9.5.0"
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

@@ -20,11 +20,14 @@ import com.smd.alertapp.DataLayer.Alert.QuickAlertsCallback;
 import com.smd.alertapp.Entities.Alert.Alert;
 import com.smd.alertapp.Entities.Alert.CustomAlert;
 import com.smd.alertapp.Entities.Alert.QuickAlert;
+import com.smd.alertapp.Entities.Post;
 import com.smd.alertapp.Entities.User.HelplineType;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.SessionManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class HelplineMainActivity extends AppCompatActivity {
@@ -74,6 +77,12 @@ public class HelplineMainActivity extends AppCompatActivity {
             @Override
             public void onQuickAlertsReceived(ArrayList<Alert> alerts) {
                 quickAlerts=alerts;
+                Collections.sort(quickAlerts, new Comparator<Alert>() {
+                    @Override
+                    public int compare(Alert o1, Alert o2) {
+                        return o2.getDateTimeStamp().compareTo(o1.getDateTimeStamp());
+                    }
+                });
                 Log.d("Deb",quickAlerts.toString());
                 quickAlertAdapter=new AlertAdapter(quickAlerts,getSupportFragmentManager());
                 quickAlertView.setAdapter(quickAlertAdapter);
@@ -83,6 +92,12 @@ public class HelplineMainActivity extends AppCompatActivity {
             @Override
             public void onCustomAlertsReceived(ArrayList<Alert> alerts) {
                 customAlerts=alerts;
+                Collections.sort(customAlerts, new Comparator<Alert>() {
+                    @Override
+                    public int compare(Alert o1, Alert o2) {
+                        return o2.getDateTimeStamp().compareTo(o1.getDateTimeStamp());
+                    }
+                });
                 customAlertAdaptor=new AlertAdapter(customAlerts,getSupportFragmentManager());
                 customAlertView.setAdapter(customAlertAdaptor);
             }

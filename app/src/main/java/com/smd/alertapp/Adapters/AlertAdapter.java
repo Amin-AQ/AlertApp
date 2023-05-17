@@ -45,6 +45,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
         holder.alertIdTxt.setText(alert.getAlertId());
         holder.alertUserIdTxt.setText(alert.getUserId()); // PHONE NUMBER
         holder.helplineTypeTxt.setText(alert.getHelplineType().toString());
+        holder.dateTimeTxt.setText(alert.getDateTimeStamp().toString().split(" GMT")[0]);
         holder.alertCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,9 +83,10 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.AlertViewHol
     public static class AlertViewHolder extends RecyclerView.ViewHolder{
 
         CardView alertCard;
-        TextView alertIdTxt, alertUserIdTxt, alertTypeTxt, helplineTypeTxt;
+        TextView alertIdTxt, alertUserIdTxt, alertTypeTxt, helplineTypeTxt, dateTimeTxt;
         public AlertViewHolder(@NonNull View itemView) {
             super(itemView);
+            dateTimeTxt=itemView.findViewById(R.id.alertdatetime);
             alertCard=itemView.findViewById(R.id.alertcard);
             alertIdTxt=itemView.findViewById(R.id.alertid);
             alertUserIdTxt=itemView.findViewById(R.id.alertuser);
