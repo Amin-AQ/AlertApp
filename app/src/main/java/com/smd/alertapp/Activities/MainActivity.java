@@ -68,6 +68,7 @@ import com.smd.alertapp.Entities.Alert.CustomAlert;
 import com.smd.alertapp.Entities.Alert.QuickAlert;
 import com.smd.alertapp.Entities.User.HelplineType;
 import com.smd.alertapp.Entities.User.HelplineUser;
+import com.smd.alertapp.Entities.User.UserType;
 import com.smd.alertapp.Fragments.ContactsFragment;
 import com.smd.alertapp.R;
 import com.smd.alertapp.Utilities.LocationUtil;
@@ -109,6 +110,69 @@ public class MainActivity extends AppCompatActivity {
         if(!sessionManager.checkLogin())
             finish();
         userDetails = sessionManager.getUserDetails();
+        if(userDetails.get("usertype").equals(UserType.HELPLINE.toString())){
+            sessionManager.LogoutUser();
+            finish();
+        }
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this,"ca-app-pub-5649663507193610/6846984843", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("Debug", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d("Debug", loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+        Intent intent = getIntent();
+        if (intent != null) {
+            String action = intent.getAction();
+            if (action != null) {
+                switch (action) {
+                    case "CALL_HELPLINE": {
+                        String[]perms=new String[]{Manifest.permission.CALL_PHONE};
+                        if(!hasPermissions(MainActivity.this,perms)){
+                            ActivityCompat.requestPermissions(MainActivity.this,perms,4);
+                        }
+                        else
+                            HelplineUser.callHelpline(MainActivity.this);
+                        break;
+                    }
+                    case "EDIT_CONTACTS": {
+                        if(checkSelfPermission(android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
+                            launchEditContactsFragment();
+                        else
+                            PermissionUtil.requestReadContactsPermission(MainActivity.this);
+                        break;
+                    }
+                    case "QUICK_ALERT": {
+                        String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.SEND_SMS};
+                        String[] perms = new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION};
+                        if (!hasPermissions(MainActivity.this, permissions)) {
+                            ActivityCompat.requestPermissions(MainActivity.this, permissions, 2);
+                        } else if (!hasPermissions(MainActivity.this, perms)) {
+                            ActivityCompat.requestPermissions(MainActivity.this, perms, 3);
+                        } else
+                            checkLocationSettings(true);
+                        break;
+                    }
+                }
+            }
+        }
         alertDAO=new AlertFirebaseDAO(MainActivity.this);
         locationProgressBar = findViewById(R.id.locationprogressbar);
         videoProgressBar = findViewById(R.id.videoprogressbar);
@@ -130,29 +194,7 @@ public class MainActivity extends AppCompatActivity {
         micView=findViewById(R.id.microphone_icon);
         videoView=findViewById(R.id.video_icon);
         sendBtnView=findViewById(R.id.send_button);
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-        AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        Log.i("Debug", "onAdLoaded");
-                    }
 
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error
-                        Log.d("Debug", loadAdError.toString());
-                        mInterstitialAd = null;
-                    }
-                });
 
         recordMediaResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -434,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("TAG", "The interstitial ad wasn't ready yet.");
         }
         AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+        InterstitialAd.load(this,"ca-app-pub-5649663507193610/6846984843", adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {

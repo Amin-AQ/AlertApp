@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.smd.alertapp.Activities.MainActivity;
 import com.smd.alertapp.R;
 
 /**
@@ -18,29 +19,37 @@ public class RegularUserWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        Log.d("1","In widget");
+        Log.d("1", "In widget");
         CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.regular_user_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
-        // creating intents for all 3 button
-        Intent quickAlertIntent = new Intent(context,WidgetReceiver.class);
-        Intent callHelplineIntent = new Intent(context,WidgetReceiver.class);
-        Intent editContactsIntent = new Intent(context,WidgetReceiver.class);
-        // setting actions to call in broadcast receiver
-        quickAlertIntent.setAction("QUICK_ALERT");
-        editContactsIntent.setAction("EDIT_CONTACTS");
-        callHelplineIntent.setAction("CALL_HELPLINE");
+        views.setTextViewText(R.id.previewText, widgetText);
 
-        PendingIntent quickAlertPendingIntent=PendingIntent.getBroadcast(context,0,quickAlertIntent,0),
-                      callHelplinePendingIntent=PendingIntent.getBroadcast(context,1,callHelplineIntent,0),
-                      editContactsPendingIntent=PendingIntent.getBroadcast(context,2,editContactsIntent,0);
-        views.setOnClickPendingIntent(R.id.quickalertbtn,quickAlertPendingIntent);
-        views.setOnClickPendingIntent(R.id.callbtn,callHelplinePendingIntent);
-        views.setOnClickPendingIntent(R.id.editcontactsbtn,editContactsPendingIntent);
-        // Instruct the widget manager to update the widget
+        // Create an explicit Intent to launch MainActivity
+        Intent mainActivityIntent = new Intent(context, MainActivity.class);
+        mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Create unique request codes for each button
+        int quickAlertRequestCode = 0;
+        int callHelplineRequestCode = 1;
+        int editContactsRequestCode = 2;
+
+        // Add extra data with unique keys to the intent to differentiate actions
+        mainActivityIntent.setAction("QUICK_ALERT");
+        PendingIntent quickAlertPendingIntent = PendingIntent.getActivity(context, quickAlertRequestCode, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mainActivityIntent.setAction("CALL_HELPLINE");
+        PendingIntent callHelplinePendingIntent = PendingIntent.getActivity(context, callHelplineRequestCode, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mainActivityIntent.setAction("EDIT_CONTACTS");
+        PendingIntent editContactsPendingIntent = PendingIntent.getActivity(context, editContactsRequestCode, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        views.setOnClickPendingIntent(R.id.quickalertbtn, quickAlertPendingIntent);
+        views.setOnClickPendingIntent(R.id.callbtn, callHelplinePendingIntent);
+        views.setOnClickPendingIntent(R.id.editcontactsbtn, editContactsPendingIntent);
+
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
+
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {

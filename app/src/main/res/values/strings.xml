@@ -45,7 +45,7 @@
     <string name="this_feature_allows_you_to_contact_helplines_in_case_of_emergency_after_clicking_on_the_contact_helpline_box_it_will_direct_you_to_a_list_of_helplines_you_can_select_any_and_contact_them">This feature allows you to contact helplines in case of emergency. After clicking on the contact helpline box, it will direct you to a list of helplines. You can select any, and contact them.</string>
     <string name="user_manual">User Manual</string>
     <string name="logout">Logout</string>
-    <string name="credits"><![CDATA[This app is part of a project developed by 4 exceptional students of FAST NU: Faizan (Project Lead), Amin, Maha & Fatima. We hope and dream that one day this app will go into production and help citizens in getting timely help in urgent situations.]]></string>
+    <string name="credits"><![CDATA[This app is part of a project developed by the exceptional students of FAST NU. We hope and dream that one day this app will go into production and help citizens in getting timely help in urgent situations.]]></string>
     <string name="comments">Comments</string>
     <string name="click_to_view_details">Click to view details</string>
     <string name="alert_type">Alert Type</string>
