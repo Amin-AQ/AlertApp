@@ -51,42 +51,52 @@ public class PostFirebaseDAO implements IPostDAO{
 
     @Override
     public void save(Post post, Uri fileUri) {
-        String path = fileUri.toString();
-        int lastSlashIndex = path.lastIndexOf("/");
-        String fileName = path.substring(lastSlashIndex + 1, path.length());
-        Log.e("File name", fileName);
-        final StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        final StorageReference fileRef = storageRef.child("files/" + fileName);
         String key = postRef.push().getKey();
-        post.setPostId(key);
-        fileRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        post.setMediaUrl(uri.toString());
-                        postRef.child(key).setValue(post)
+        if(fileUri!=null) {
+            String path = fileUri.toString();
+            int lastSlashIndex = path.lastIndexOf("/");
+            String fileName = path.substring(lastSlashIndex + 1, path.length());
+            Log.e("File name", fileName);
+            final StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            final StorageReference fileRef = storageRef.child("files/" + fileName);
+            post.setPostId(key);
+            fileRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            post.setMediaUrl(uri.toString());
+                            postRef.child(key).setValue(post)
+                                    .addOnCompleteListener(task -> {
+                                        Toast.makeText(context, "Post created successfully", Toast.LENGTH_LONG).show();
+                                    }).addOnFailureListener(task -> {
+                                        Toast.makeText(context, "Error creating post", Toast.LENGTH_LONG).show();
+                                    });
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(context.getApplicationContext(), "Failed uploading image", Toast.LENGTH_SHORT).show();
+                    postRef.child(key).setValue(post)
                             .addOnCompleteListener(task -> {
-                                Toast.makeText( context,"Post created successfully", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Post created successfully", Toast.LENGTH_LONG).show();
                             }).addOnFailureListener(task -> {
-                                Toast.makeText( context,"Error creating post", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Error creating post", Toast.LENGTH_LONG).show();
                             });
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context.getApplicationContext(), "Failed uploading image", Toast.LENGTH_SHORT).show();
-                postRef.child(key).setValue(post)
-                        .addOnCompleteListener(task -> {
-                            Toast.makeText( context,"Post created successfully", Toast.LENGTH_LONG).show();
-                        }).addOnFailureListener(task -> {
-                            Toast.makeText( context,"Error creating post", Toast.LENGTH_LONG).show();
-                        });
-            }
-        });
+                }
+            });
+        } else{
+            post.setMediaUrl(null);
+            postRef.child(key).setValue(post)
+                    .addOnCompleteListener(task -> {
+                        Toast.makeText(context, "Post created successfully", Toast.LENGTH_LONG).show();
+                    }).addOnFailureListener(task -> {
+                        Toast.makeText(context, "Error creating post", Toast.LENGTH_LONG).show();
+                    });
+        }
     }
 
     @Override

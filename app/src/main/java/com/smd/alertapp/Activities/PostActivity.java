@@ -26,6 +26,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.smd.alertapp.Adapters.ContactsAdapter;
@@ -53,6 +62,7 @@ public class PostActivity extends AppCompatActivity {
     ArrayList<Post> posts;
     IPostDAO dao;
     ImageView postImage;
+    private InterstitialAd mInterstitialAd;
     SessionManager sessionManager;
 //    ActivityResultLauncher mGetContentLauncher;
     HashMap<String, String> userDetails;
@@ -75,6 +85,29 @@ public class PostActivity extends AppCompatActivity {
         postImage = findViewById(R.id.post_image);
         sessionManager = new SessionManager(getApplicationContext());
         userDetails = sessionManager.getUserDetails();
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this,"ca-app-pub-5649663507193610/6846984843", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("Debug", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d("Debug", loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
         dao.getPosts(new PostsCallback() {
             @Override
             public void onPostsReceived(ArrayList<Post> postsList) {
@@ -114,7 +147,7 @@ public class PostActivity extends AppCompatActivity {
                 } else {
                     String text = postText.getText().toString();
                     Post newPost = new Post(text, userDetails.get("username"));
-                    Log.e("Saving post uri: ", fileUri.toString());
+                    //Log.e("Saving post uri: ", fileUri.toString());
                     dao.save(newPost, fileUri);
                     postText.setText("");
                     postImage.setImageURI(null);
@@ -130,6 +163,7 @@ public class PostActivity extends AppCompatActivity {
                             });
                             adapter = new PostsAdapter(posts, getSupportFragmentManager());
                             recyclerView.setAdapter(adapter);
+                            showAd();
                         }
                     });
                 }
@@ -168,4 +202,69 @@ public class PostActivity extends AppCompatActivity {
             }
         });
     }
+
+    void showAd(){
+        if (mInterstitialAd != null) {
+            setFullScreenCallback();
+            mInterstitialAd.show(PostActivity.this);
+        } else {
+            Log.d("TAG", "The interstitial ad wasn't ready yet.");
+        }
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this,"ca-app-pub-5649663507193610/6846984843", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("Debug", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d("Debug", loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+    void setFullScreenCallback(){
+        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+            @Override
+            public void onAdClicked() {
+                // Called when a click is recorded for an ad.
+                Log.d("Deubg", "Ad was clicked.");
+            }
+
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                // Called when ad is dismissed.
+                // Set the ad reference to null so you don't show the ad a second time.
+                Log.d("Deubg", "Ad dismissed fullscreen content.");
+                mInterstitialAd = null;
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                // Called when ad fails to show.
+                Log.e("Deubg", "Ad failed to show fullscreen content.");
+                mInterstitialAd = null;
+            }
+
+            @Override
+            public void onAdImpression() {
+                // Called when an impression is recorded for an ad.
+                Log.d("Deubg", "Ad recorded an impression.");
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                // Called when ad is shown.
+                Log.d("Deubg", "Ad showed fullscreen content.");
+            }
+
+        });
+    }
+
 }

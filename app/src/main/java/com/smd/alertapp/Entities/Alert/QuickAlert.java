@@ -28,7 +28,7 @@ public class QuickAlert extends Alert {
 
     @Override
     public void send(Context ctx, boolean alertContacts, boolean alertHelplines, String username, IAlertDAO dao, AlertSentCallback callback) {
-        String message = "This message is from EmergencyAlert app.\n"+username+" is in danger and needs your help!\nLocation:\n"+location;
+        String message = "This message is from EmergencyAlert app.\n"+username+" needs your assistance!\nLocation:\n"+location;
         if(alertContacts) {
             SmsManager smsManager = SmsManager.getDefault();
             if(contactList.size()==0)
