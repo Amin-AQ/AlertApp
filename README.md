@@ -1,6 +1,7 @@
 # Emergency Alert App
 
-![App Logo](screenshots/icon.png | width=100)
+<img src="screenshots/icon.png" alt="App Logo" width="200"/>
+
 
 ## Introduction
 
