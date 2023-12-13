@@ -1,5 +1,7 @@
 # Emergency Alert App
 
+![App Logo](screenshots/icon.png)
+
 ## Introduction
 
 Welcome to the Emergency Alert App, a safety application designed to help users alert their specified contacts and certain helplines during times of danger.
@@ -36,3 +38,9 @@ In case of an emergency:
 2. Choose from a list of helplines for assistance.
 
 Feel empowered and secure with the Emergency Alert App. Stay safe!
+
+## Screenshots
+
+![Login](screenshots/Screenshot_20230517-194823.png)
+![User Dashboard](screenshots/Screenshot_20230517-194841(1).png)
+![Helpline Dashboard](screenshots/Screenshot_20230513-011713.png)
