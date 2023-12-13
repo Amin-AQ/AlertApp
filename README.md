@@ -1,6 +1,6 @@
 # Emergency Alert App
 
-![App Logo](screenshots/icon.png)
+![App Logo](screenshots/icon.png | width=100)
 
 ## Introduction
 
