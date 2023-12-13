@@ -1,6 +1,7 @@
 # Emergency Alert App
 
-![App Logo](screenshots/icon.png | width=100)
+<img src="screenshots/icon.png" alt="App Logo" width="200"/>
+
 
 ## Introduction
 
@@ -41,6 +42,6 @@ Feel empowered and secure with the Emergency Alert App. Stay safe!
 
 ## Screenshots
 
-![Login](screenshots/Screenshot_20230517-194823.png)
-![User Dashboard](screenshots/Screenshot_20230517-194841(1).png)
-![Helpline Dashboard](screenshots/Screenshot_20230513-011713.png)
+<img src="screenshots/Screenshot_20230517-194823.png" alt="Login" width="200"/> <img src="screenshots/Screenshot_20230517-194841(1).png" alt="User Dashboard" width="200"/> <img src="screenshots/Screenshot_20230513-011713.png" alt="Helpline Dashboard" width="200"/>
+
+<br>
