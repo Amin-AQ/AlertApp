@@ -24,24 +24,25 @@ public class RegularUserWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.regular_user_widget);
         views.setTextViewText(R.id.previewText, widgetText);
 
-        // Create an explicit Intent to launch MainActivity
-        Intent mainActivityIntent = new Intent(context, MainActivity.class);
-        mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
         // Create unique request codes for each button
         int quickAlertRequestCode = 0;
         int callHelplineRequestCode = 1;
         int editContactsRequestCode = 2;
 
-        // Add extra data with unique keys to the intent to differentiate actions
-        mainActivityIntent.setAction("QUICK_ALERT");
-        PendingIntent quickAlertPendingIntent = PendingIntent.getActivity(context, quickAlertRequestCode, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent quickAlertIntent = new Intent(context, MainActivity.class);
+        quickAlertIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        quickAlertIntent.setAction("QUICK_ALERT");
+        PendingIntent quickAlertPendingIntent = PendingIntent.getActivity(context, quickAlertRequestCode, quickAlertIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        mainActivityIntent.setAction("CALL_HELPLINE");
-        PendingIntent callHelplinePendingIntent = PendingIntent.getActivity(context, callHelplineRequestCode, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent callHelplineIntent = new Intent(context, MainActivity.class);
+        callHelplineIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        callHelplineIntent.setAction("CALL_HELPLINE");
+        PendingIntent callHelplinePendingIntent = PendingIntent.getActivity(context, callHelplineRequestCode, callHelplineIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        mainActivityIntent.setAction("EDIT_CONTACTS");
-        PendingIntent editContactsPendingIntent = PendingIntent.getActivity(context, editContactsRequestCode, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent editContactsIntent = new Intent(context, MainActivity.class);
+        editContactsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        editContactsIntent.setAction("EDIT_CONTACTS");
+        PendingIntent editContactsPendingIntent = PendingIntent.getActivity(context, editContactsRequestCode, editContactsIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         views.setOnClickPendingIntent(R.id.quickalertbtn, quickAlertPendingIntent);
         views.setOnClickPendingIntent(R.id.callbtn, callHelplinePendingIntent);
